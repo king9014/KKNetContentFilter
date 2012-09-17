@@ -34,7 +34,7 @@ public class KKContentSpider {
 		        		break;
 		        	}
 		        	if(copyFlag) {
-		        		content.append(line);
+		        		content.append(line + "\r\n");
 		        	}
 		        }
 			} else {
@@ -43,7 +43,7 @@ public class KKContentSpider {
 		} catch (Exception e) {
 			KK.ERROR(e);
 		}
-KK.INFO(content);
+//KK.INFO(content);
 		return content.toString();
 	}
 }
