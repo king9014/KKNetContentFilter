@@ -8,8 +8,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.stereotype.Component;
 
 import cn.jinren.test.KK;
 
@@ -17,16 +21,21 @@ import cn.jinren.test.KK;
 /**
 * Description: 将指定的HTTP网络资源在本地以文件形式存放
 */
+@Component
 public class HttpDownloadThread implements Runnable{
 
 	private static int BUFFER_SIZE = 4096; //缓冲区大小
+	private static int IMG_DOWN_THREAD_NUM = 5; 
 	private static String FILE_ROOT = "c:/kdownload/image/";
 	
 	private String destUrl;
 	private String absolutePath;
 	private String relativePath;
 	
+	private ExecutorService imageDownloadThreadPool = Executors.newFixedThreadPool(IMG_DOWN_THREAD_NUM);
 	private Boolean isStarted = false;
+	
+	public HttpDownloadThread(){}
 	
 	public HttpDownloadThread(String destUrl) {
 		this.destUrl = destUrl;
