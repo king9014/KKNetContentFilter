@@ -37,6 +37,9 @@ public class KKContentSpider {
 		        		content.append(line + "\r\n");
 		        	}
 		        }
+		        bufferedReader.close();
+		        is.close();
+		        httpurlconn.disconnect();
 			} else {
 				KK.ERROR(responsecode);
 			}

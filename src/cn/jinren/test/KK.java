@@ -1,7 +1,15 @@
 package cn.jinren.test;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import cn.dreamfield.utils.HttpDownloadUtils;
 
 /**
  * SIMPLE LOG FOR TEST
@@ -10,16 +18,38 @@ import java.util.Date;
  */
 public class KK {
 	
+	private static String LOG_FILE_ROOT = "c:/kdownload/log/";
+	
 	public static void LOG(Object o) {
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println("[LOG " + format.format(date) + "]: " + o);
+		String log = "[LOG " + format.format(date) + "]: " + o;
+		System.out.println(log);
+		LOG2FIEL(log, date);
+	}
+	
+	private static void LOG2FIEL(String log, Date date) {
+		File file = new File(LOG_FILE_ROOT);
+		if(!file.exists()) {
+			file.mkdirs();
+		}
+		SimpleDateFormat ymFormat = new SimpleDateFormat("yyyyMMdd");
+		try {
+			FileOutputStream fos = new FileOutputStream(LOG_FILE_ROOT + ymFormat.format(date) + "_LOG.txt", true);
+			log = log + "\r\n";
+			fos.write(log.getBytes());
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void LOG(String para, Object o) {
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println("[LOG " + format.format(date) + "]: " + "{" + para + ":" + "{" + o + "}}");
+		String log = "[LOG " + format.format(date) + "]: " + "{" + para + ":" + "{" + o + "}}";
+		System.out.println(log);
+		LOG2FIEL(log, date);
 	}
 	
 	public static void LOG(String[] para, Object[] o) {
@@ -29,7 +59,9 @@ public class KK {
 		}
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println("[LOG " + format.format(date) + "]: " + jsonstr);
+		String log = "[LOG " + format.format(date) + "]: " + jsonstr;
+		System.out.println(log);
+		LOG2FIEL(log, date);
 	}
 	
 	public static void INFO(Object o) {

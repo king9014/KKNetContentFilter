@@ -28,8 +28,8 @@ public class PubDateFilter implements StrFilter {
 				dateStr = ma.group(1);
 			}
 		}
-		KK.DEBUG("dateStrParent", dateStrParent);
-		KK.DEBUG("dateStr", dateStr);
+		//KK.DEBUG("dateStrParent", dateStrParent);
+		//KK.DEBUG("dateStr", dateStr);
 		result = result.replace(dateStrParent, dateStr);
 		return result;
 	}
