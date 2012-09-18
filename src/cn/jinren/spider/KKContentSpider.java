@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import cn.jinren.test.KK;
 
@@ -48,5 +51,42 @@ public class KKContentSpider {
 		}
 //KK.INFO(content);
 		return content.toString();
+	}
+	
+	/**
+	 * 通过ListSpiderable获得网页的元素组
+	 * @param spiderable
+	 * @param elements
+	 * @param decode
+	 * @throws IOException 
+	 */
+	public static void getElementsFromWeb(ListSpiderable spiderable, ArrayList<Element> elements, String decode) throws IOException {
+		String content = getContentString(spiderable, decode);
+        Pattern p = Pattern.compile(spiderable.getElementPatt());
+        Matcher m = p.matcher(content);//匹配Element
+        while(m.find()) {
+        	Boolean isSpidered = true;
+        	Element element = new Element();
+        	element.setCount(spiderable.getItemCount());
+        	for(int i = 0; i < spiderable.getItemCount(); i++) {//取得Element中Item数目，并逐个匹配
+        		Pattern pa = Pattern.compile(spiderable.getItemPatt(i));
+            	Matcher ma = pa.matcher(m.group(1));
+            	if(ma.find()) {
+            		element.setItem(i, ma.group(1));
+            		KK.DEBUG("-" + i + "-", ma.group(1));
+            	} else {
+            		if(i == 0) {//未匹配到第一个Item，则放弃整个Element
+            			isSpidered = false;
+            			break;
+            		}
+            	}
+            	if(i == (spiderable.getItemCount() - 1)) {
+            		KK.DEBUG("================================================");
+            	}
+        	}
+        	if(isSpidered) {
+        		elements.add(element);
+        	}
+        }
 	}
 }
