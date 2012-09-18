@@ -13,10 +13,15 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Component;
 
+import cn.dreamfield.model.NetArticle;
 import cn.dreamfield.spiderable.GameNewsContentSpiderable;
+import cn.jinren.filter.ATagFilter;
 import cn.jinren.filter.NetImageFilter;
+import cn.jinren.filter.PaginationFilter;
 import cn.jinren.filter.PubDateFilter;
 import cn.jinren.filter.ScriptFilter;
 import cn.jinren.filter.SpecialStrFilter;
@@ -30,7 +35,7 @@ import cn.jinren.test.KK;
 * Description: 将指定的HTTP网络资源在本地以文件形式存放
 */
 @Component
-public class HttpDownloadUtils {
+public class HttpDownloadUtil {
 
 	private static int BUFFER_SIZE = 4096; //缓冲区大小
 	private static int IMG_DOWN_THREAD_NUM = 5; 
@@ -39,12 +44,12 @@ public class HttpDownloadUtils {
 	private static int HTML_MAX_RELOAD_NUM = 2;
 	private static String FILE_ROOT = "c:/kdownload/";
 	private static String IMG_FILE_ROOT = FILE_ROOT + "image/";
-	private static String HTML_FILE_ROOT = FILE_ROOT + "/html/";
+	private static String HTML_FILE_ROOT = FILE_ROOT + "html/";
 	
 	private ExecutorService imageDownloadThreadPool = Executors.newFixedThreadPool(IMG_DOWN_THREAD_NUM);
 	private ExecutorService htmlDownloadThreadPool = Executors.newFixedThreadPool(HTML_DOWN_THREAD_NUM);
 	
-	public HttpDownloadUtils(){}
+	public HttpDownloadUtil(){}
 	
 	public String DownloadImageFromURL(String url) {
 		ImageDownloadThread downloadThread = new ImageDownloadThread(url, 0);
@@ -80,7 +85,8 @@ public class HttpDownloadUtils {
 					downloadFile();
 				} catch (IOException e) {
 					if(reLoadNum < HTML_MAX_RELOAD_NUM) {
-						HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, reLoadNum ++);
+						KK.INFO("[HTML RELOAD]: " + "[" + reLoadNum + "] " + spiderable.getURL()); 
+						HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, ++ reLoadNum);
 						htmlDownloadThreadPool.execute(downloadThread);
 					} else {
 						KK.LOG(spiderable.getURL() + "-->" + e);
@@ -111,7 +117,7 @@ public class HttpDownloadUtils {
 			SimpleDateFormat ymFormat = new SimpleDateFormat("yyyyMM");
 			SimpleDateFormat dhFormat = new SimpleDateFormat("ddHH");
 			//生成文件名
-			String fileName = dhFormat.format(date) + "_" + MD5Utils.MD5Encode(spiderable.getURL()).toUpperCase() + ".html";
+			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(spiderable.getURL()).toUpperCase() + ".html";
 			String path = HTML_FILE_ROOT + ymFormat.format(date) + "/";
 			File file = new File(path);
 			if(!file.exists()) { //判断路径是否存在，不存在则创建
@@ -128,10 +134,12 @@ public class HttpDownloadUtils {
 			StrFilterChain chain = new StrFilterChain();
 			chain.addStrFilter(new NetImageFilter())
 				.addStrFilter(new ScriptFilter())
-				//.addStrFilter(new ATagFilter())
 				.addStrFilter(new PubDateFilter())
-				.addStrFilter(new SpecialStrFilter());
+				.addStrFilter(new SpecialStrFilter())
+				.addStrFilter(new PaginationFilter())
+				.addStrFilter(new ATagFilter());
 			String result = chain.doFilter(str);
+			//在这可能要做一些持久化的配置
 			FileOutputStream fos = new FileOutputStream(absolutePath);//建立文件
 			fos.write(result.getBytes());
 			fos.close();
@@ -156,7 +164,8 @@ public class HttpDownloadUtils {
 					downloadFile();
 				} catch (IOException e) {
 					if(reLoadNum < IMG_MAX_RELOAD_NUM) {
-						ImageDownloadThread downloadThread = new ImageDownloadThread(destUrl, reLoadNum ++);
+						KK.INFO("[IMG RELOAD]: " + destUrl); 
+						ImageDownloadThread downloadThread = new ImageDownloadThread(destUrl, ++ reLoadNum);
 						imageDownloadThreadPool.execute(downloadThread);
 					} else {
 						KK.LOG(destUrl + "-->" + e);
@@ -187,7 +196,7 @@ public class HttpDownloadUtils {
 			SimpleDateFormat ymFormat = new SimpleDateFormat("yyyyMM");
 			SimpleDateFormat dhFormat = new SimpleDateFormat("ddHH");
 			//生成文件名
-			String fileName = dhFormat.format(date) + "_" + MD5Utils.MD5Encode(destUrl).toUpperCase();
+			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(destUrl).toUpperCase();
 			Pattern pattern = Pattern.compile("[.][\\w]+?$");
 			Matcher matcher = pattern.matcher(destUrl);
 			if(matcher.find()) { //匹配后缀名

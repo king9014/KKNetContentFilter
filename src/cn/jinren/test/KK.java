@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import cn.dreamfield.utils.HttpDownloadUtils;
+import cn.dreamfield.utils.HttpDownloadUtil;
 
 /**
  * SIMPLE LOG FOR TEST

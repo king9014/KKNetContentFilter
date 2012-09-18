@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="cn.dreamfield.model.NetArticle" table="net_article">
+		<id name="id" column="ID">
+			<generator class="native"/>
+		</id>
+		<property name="name" column="NAME"/>
+		<property name="pageTotal" column="PAGE_TOTAL"/>
+		<property name="pageCorrent" column="PAGE_CORRENT"/>
+		<property name="date" column="DATE"/>
+		<property name="optDate" column="OPT_DATE"/>
+		<property name="htmlUrl" column="HTML_URL"/>
+		<property name="imgUrl" column="IMG_URL"/>
+		<property name="imgUrlS" column="IMG_URL_S"/>
+		<property name="isExist" column="IS_EXIST"/>
+		<property name="originUrl" column="ORIGIN_URL"/>
+		
+	</class>
+</hibernate-mapping>

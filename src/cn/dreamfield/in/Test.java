@@ -1,33 +1,29 @@
 package cn.dreamfield.in;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Component;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
+import cn.dreamfield.model.NetArticle;
 import cn.dreamfield.spiderable.GameNewsContentSpiderable;
-import cn.dreamfield.utils.HttpDownloadUtils;
-import cn.dreamfield.utils.SpringUtils;
-import cn.jinren.filter.ATagFilter;
-import cn.jinren.filter.NetImageFilter;
-import cn.jinren.filter.PubDateFilter;
-import cn.jinren.filter.ScriptFilter;
-import cn.jinren.filter.SpecialStrFilter;
-import cn.jinren.filter.StrFilterChain;
-import cn.jinren.spider.KKContentSpider;
+import cn.dreamfield.utils.HibernateUtil;
+import cn.dreamfield.utils.HttpDownloadUtil;
+import cn.dreamfield.utils.SpringUtil;
 import cn.jinren.test.KK;
 
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		HttpDownloadUtils h = SpringUtils.ctx.getBean(HttpDownloadUtils.class);
-		KK.LOG(h.DownloadHtmlFromURL(new GameNewsContentSpiderable()));
+		HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
+		h.DownloadHtmlFromURL(new GameNewsContentSpiderable("http://www.ali213.net/news/html/2012-9/53698.html"));
+//		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+//		Transaction transaction = session.beginTransaction();
+//		NetArticle netArticle = new NetArticle();
+//		netArticle.setName("TEST");
+//		netArticle.setOriginUrl("http://baidu.com");
+//		session.save(netArticle);
+//		transaction.commit();
 	}
 
 }

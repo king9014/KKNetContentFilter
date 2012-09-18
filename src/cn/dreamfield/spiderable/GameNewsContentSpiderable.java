@@ -7,6 +7,13 @@ public class GameNewsContentSpiderable implements Spiderable {
 	String start = "<div class=\"new_lei\">";
 	String end = "<script src=\"../../js/pic.js\"></script>";
 	
+	public GameNewsContentSpiderable(String url) {
+		this.url = url;
+	}
+	
+	public GameNewsContentSpiderable() {
+	}
+	
 	@Override
 	public String getURL() {
 		return url;

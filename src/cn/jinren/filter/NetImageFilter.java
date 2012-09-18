@@ -3,8 +3,8 @@ package cn.jinren.filter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.dreamfield.utils.HttpDownloadUtils;
-import cn.dreamfield.utils.SpringUtils;
+import cn.dreamfield.utils.HttpDownloadUtil;
+import cn.dreamfield.utils.SpringUtil;
 import cn.jinren.test.KK;
 
 /**
@@ -21,7 +21,7 @@ public class NetImageFilter implements StrFilter {
 		Matcher matcher = pattern.matcher(str);
 		while(matcher.find()) {
 			String imageUrl = matcher.group(1);
-			HttpDownloadUtils httpDownloadUtils = SpringUtils.ctx.getBean(HttpDownloadUtils.class);
+			HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
 			String relativePath = httpDownloadUtils.DownloadImageFromURL(imageUrl);
 			result = result.replaceAll(imageUrl, "../../image/" + relativePath);
 		}

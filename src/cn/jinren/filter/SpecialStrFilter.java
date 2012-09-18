@@ -6,6 +6,7 @@ public class SpecialStrFilter implements StrFilter {
 	public String doFilter(String str) {
 		String result = str;
 		result = result.replace("【游侠导读】", "导读:");
+		result = result.replaceAll("alt=\"游侠网\"", "");
 		return result;
 	}
 
