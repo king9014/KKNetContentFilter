@@ -15,7 +15,21 @@ public class NetArticle {
 	private String imgUrlS;
 	private String isExist;
 	private String originUrl;
+	private String category;
+	private Long pid;
 	
+	public Long getPid() {
+		return pid;
+	}
+	public void setPid(Long pid) {
+		this.pid = pid;
+	}
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
 	public String getOriginUrl() {
 		return originUrl;
 	}

@@ -49,8 +49,12 @@ public class KKContentSpider {
 			KK.ERROR(responsecode);
 			throw new IOException();
 		}
+		String resCont = content.toString();
+		if(resCont.trim().equals("")) {
+			throw new IOException();
+		}
 //KK.INFO(content);
-		return content.toString();
+		return resCont;
 	}
 	
 	/**

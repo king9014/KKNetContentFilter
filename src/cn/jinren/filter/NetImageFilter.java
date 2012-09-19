@@ -3,6 +3,7 @@ package cn.jinren.filter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.dreamfield.model.NetArticle;
 import cn.dreamfield.utils.HttpDownloadUtil;
 import cn.dreamfield.utils.SpringUtil;
 import cn.jinren.test.KK;
@@ -13,6 +14,13 @@ import cn.jinren.test.KK;
  *
  */
 public class NetImageFilter implements StrFilter {
+	
+	private NetArticle netArticle;
+	private Boolean isFirstImg = true;
+	
+	public NetImageFilter(NetArticle netArticle) {
+		this.netArticle = netArticle;
+	}
 
 	@Override
 	public String doFilter(String str) {
@@ -21,8 +29,15 @@ public class NetImageFilter implements StrFilter {
 		Matcher matcher = pattern.matcher(str);
 		while(matcher.find()) {
 			String imageUrl = matcher.group(1);
+			if(imageUrl.startsWith("/") | imageUrl.startsWith("../") | imageUrl.startsWith("../../")) {
+				KK.LOG(imageUrl);
+			}
 			HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
 			String relativePath = httpDownloadUtils.DownloadImageFromURL(imageUrl);
+			if(isFirstImg) {
+				isFirstImg = false;
+				netArticle.setImgUrl(relativePath);
+			}
 			result = result.replaceAll(imageUrl, "../../image/" + relativePath);
 		}
 		return result;

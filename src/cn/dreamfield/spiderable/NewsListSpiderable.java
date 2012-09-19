@@ -3,15 +3,27 @@ package cn.dreamfield.spiderable;
 import cn.jinren.spider.ListSpiderable;
 
 public class NewsListSpiderable implements ListSpiderable {
+	
+	private String url = "http://www.ali213.net/News/listhtml/List_1_1.html";
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
+	public NewsListSpiderable() {}
+	
+	public NewsListSpiderable(String url) {
+		this.url = url;
+	}
 
 	@Override
 	public String getURL() {
-		return "http://www.ali213.net/News/listhtml/List_1_1.html";
+		return url;
 	}
 
 	@Override
 	public String getStart() {
-		return "<div class=\"liebyjp\">单机资讯</div>";
+		return "<div class=\"liebyjp\">";
 	}
 
 	@Override

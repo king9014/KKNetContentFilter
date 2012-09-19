@@ -26,18 +26,20 @@ DROP TABLE IF EXISTS `net_article`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `net_article` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(45) DEFAULT NULL,
+  `NAME` varchar(105) DEFAULT NULL,
   `PAGE_TOTAL` int(11) DEFAULT NULL,
   `PAGE_CORRENT` int(11) DEFAULT NULL,
   `DATE` datetime DEFAULT NULL,
   `OPT_DATE` datetime DEFAULT NULL,
-  `HTML_URL` varchar(45) DEFAULT NULL,
-  `IMG_URL` varchar(45) DEFAULT NULL,
-  `IMG_URL_S` varchar(45) DEFAULT NULL,
+  `HTML_URL` varchar(255) DEFAULT NULL,
+  `IMG_URL` varchar(255) DEFAULT NULL,
+  `IMG_URL_S` varchar(255) DEFAULT NULL,
   `IS_EXIST` varchar(1) DEFAULT 'N',
-  `ORIGIN_URL` varchar(45) DEFAULT NULL,
+  `ORIGIN_URL` varchar(255) DEFAULT NULL,
+  `CATEGORY` varchar(45) DEFAULT NULL,
+  `PID` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -58,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-18 17:31:27
+-- Dump completed on 2012-09-19 10:52:59

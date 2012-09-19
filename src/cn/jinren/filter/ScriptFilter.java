@@ -11,6 +11,7 @@ public class ScriptFilter implements StrFilter {
 	public String doFilter(String str) {
 		String result = str;
 		result = result.replaceAll("<script.+?>([\\w[\\W]]+?)</script>", "");
+		result = result.replaceAll("<script.+?></script>", "");
 		return result;
 	}
 

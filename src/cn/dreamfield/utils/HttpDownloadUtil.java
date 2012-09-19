@@ -13,12 +13,11 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.spiderable.GameNewsContentSpiderable;
 import cn.jinren.filter.ATagFilter;
 import cn.jinren.filter.NetImageFilter;
 import cn.jinren.filter.PaginationFilter;
@@ -40,7 +39,7 @@ public class HttpDownloadUtil {
 	private static int BUFFER_SIZE = 4096; //缓冲区大小
 	private static int IMG_DOWN_THREAD_NUM = 5; 
 	private static int IMG_MAX_RELOAD_NUM = 3;
-	private static int HTML_DOWN_THREAD_NUM = 2;
+	private static int HTML_DOWN_THREAD_NUM = 1;
 	private static int HTML_MAX_RELOAD_NUM = 2;
 	private static String FILE_ROOT = "c:/kdownload/";
 	private static String IMG_FILE_ROOT = FILE_ROOT + "image/";
@@ -48,6 +47,9 @@ public class HttpDownloadUtil {
 	
 	private ExecutorService imageDownloadThreadPool = Executors.newFixedThreadPool(IMG_DOWN_THREAD_NUM);
 	private ExecutorService htmlDownloadThreadPool = Executors.newFixedThreadPool(HTML_DOWN_THREAD_NUM);
+	
+	@Autowired
+	private NetArticleDao netArticleDao;
 	
 	public HttpDownloadUtil(){}
 	
@@ -59,12 +61,14 @@ public class HttpDownloadUtil {
 		return relativePath;
 	}
 	
-	public String DownloadHtmlFromURL(Spiderable spiderable) {
-		HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, 0);
-		String relativePath = downloadThread.getRelativePath();
-		KK.DEBUG(spiderable.getURL());
-		htmlDownloadThreadPool.execute(downloadThread);
-		return relativePath;
+	public void DownloadHtmlFromURL(Spiderable spiderable) {
+		//防止同一篇文章的重复下载
+		NetArticle originArticle = netArticleDao.getNetArticleEntity(spiderable.getURL());
+		if(null == originArticle || "N".equals(originArticle.getIsExist())) {
+			HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, 0);
+			KK.DEBUG(spiderable.getURL());
+			htmlDownloadThreadPool.execute(downloadThread);
+		}
 	}
 	
 	class HtmlDownloadThread implements Runnable {
@@ -129,20 +133,27 @@ public class HttpDownloadUtil {
 			isStarted = true;
 		}
 		
-		private void downloadFile() throws IOException {
+		private synchronized void downloadFile() throws IOException {
 			String str = KKContentSpider.getContentString(spiderable, "gbk");
-			StrFilterChain chain = new StrFilterChain();
-			chain.addStrFilter(new NetImageFilter())
-				.addStrFilter(new ScriptFilter())
-				.addStrFilter(new PubDateFilter())
-				.addStrFilter(new SpecialStrFilter())
-				.addStrFilter(new PaginationFilter())
-				.addStrFilter(new ATagFilter());
-			String result = chain.doFilter(str);
-			//在这可能要做一些持久化的配置
-			FileOutputStream fos = new FileOutputStream(absolutePath);//建立文件
-			fos.write(result.getBytes());
-			fos.close();
+			//拿到对应未本地化的数据模型
+			NetArticle netArticle = netArticleDao.getNetArticleEntity(spiderable.getURL());
+			if(null != netArticle && "N".equals(netArticle.getIsExist())) {
+				StrFilterChain chain = new StrFilterChain();
+				chain.addStrFilter(new PaginationFilter(netArticle))
+					.addStrFilter(new NetImageFilter(netArticle))
+					.addStrFilter(new ScriptFilter())
+					.addStrFilter(new PubDateFilter(netArticle))
+					.addStrFilter(new SpecialStrFilter())
+					.addStrFilter(new ATagFilter());
+				String result = chain.doFilter(str);
+				FileOutputStream fos = new FileOutputStream(absolutePath);//建立文件
+				fos.write(result.getBytes());
+				fos.close();
+				//在这可能要做一些持久化的配置
+				netArticle.setHtmlUrl(relativePath);
+				netArticle.setIsExist("Y");
+				netArticleDao.updateNetArticle(netArticle);
+			}
 		}
 	}
 	
