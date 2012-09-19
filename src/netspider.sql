@@ -4,7 +4,7 @@ USE `netspider`;
 --
 -- Host: localhost    Database: netspider
 -- ------------------------------------------------------
--- Server version	5.5.27
+-- Server version	5.5.20
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -38,6 +38,7 @@ CREATE TABLE `net_article` (
   `ORIGIN_URL` varchar(255) DEFAULT NULL,
   `CATEGORY` varchar(45) DEFAULT NULL,
   `PID` int(11) DEFAULT NULL,
+  `INTRO` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -60,4 +61,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-19 10:52:59
+-- Dump completed on 2012-09-19 22:47:16

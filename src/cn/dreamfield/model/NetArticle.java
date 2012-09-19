@@ -17,7 +17,14 @@ public class NetArticle {
 	private String originUrl;
 	private String category;
 	private Long pid;
+	private String intro;
 	
+	public String getIntro() {
+		return intro;
+	}
+	public void setIntro(String intro) {
+		this.intro = intro;
+	}
 	public Long getPid() {
 		return pid;
 	}

@@ -41,9 +41,11 @@ public class PaginationFilter implements StrFilter {
 					cArticle.setOptDate(new Date());
 					SpringUtil.ctx.getBean(NetArticleDao.class).saveNetArticle(cArticle);
 					HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
+					//游侠网的新闻内容 ---GameNewsContentSpiderable
 					httpDownloadUtils.DownloadHtmlFromURL(new GameNewsContentSpiderable(nextUrl));
 				} else if("N".equals(originArticle.getIsExist())) {
 					HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
+					//游侠网的新闻内容 ---GameNewsContentSpiderable
 					h.DownloadHtmlFromURL(new GameNewsContentSpiderable(nextUrl));
 				}
 			}

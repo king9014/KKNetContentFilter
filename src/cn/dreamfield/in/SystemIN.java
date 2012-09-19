@@ -16,8 +16,8 @@ import cn.jinren.test.KK;
 public class SystemIN {
 
 	public static void main(String[] args) throws IOException {
-		LoadAll();
-		//generateList();
+		//LoadAll();
+		generateList();
 		//reLoadN();
 	}
 	

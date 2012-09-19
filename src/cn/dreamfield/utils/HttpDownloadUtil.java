@@ -19,12 +19,14 @@ import org.springframework.stereotype.Component;
 import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.model.NetArticle;
 import cn.jinren.filter.ATagFilter;
+import cn.jinren.filter.IntroFilter;
 import cn.jinren.filter.NetImageFilter;
 import cn.jinren.filter.PaginationFilter;
 import cn.jinren.filter.PubDateFilter;
 import cn.jinren.filter.ScriptFilter;
 import cn.jinren.filter.SpecialStrFilter;
 import cn.jinren.filter.StrFilterChain;
+import cn.jinren.filter.TitleFilter;
 import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.Spiderable;
 import cn.jinren.test.KK;
@@ -147,8 +149,8 @@ public class HttpDownloadUtil {
 		
 		private void loadDownloadInfo() {
 			Date date = new Date();
-			SimpleDateFormat ymFormat = new SimpleDateFormat("yyyyMM");
-			SimpleDateFormat dhFormat = new SimpleDateFormat("ddHH");
+			SimpleDateFormat ymFormat = new SimpleDateFormat("yyMMdd");
+			SimpleDateFormat dhFormat = new SimpleDateFormat("HHmm");
 			//生成文件名
 			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(spiderable.getURL()).toUpperCase() + ".html";
 			String path = HTML_FILE_ROOT + ymFormat.format(date) + "/";
@@ -173,7 +175,9 @@ public class HttpDownloadUtil {
 					.addStrFilter(new ScriptFilter())
 					.addStrFilter(new PubDateFilter(netArticle))
 					.addStrFilter(new SpecialStrFilter())
-					.addStrFilter(new ATagFilter());
+					.addStrFilter(new ATagFilter())
+					.addStrFilter(new TitleFilter(netArticle))
+					.addStrFilter(new IntroFilter(netArticle));
 				String result = chain.doFilter(str);
 				FileOutputStream fos = new FileOutputStream(absolutePath);//建立文件
 				fos.write(result.getBytes());
@@ -233,8 +237,8 @@ public class HttpDownloadUtil {
 		
 		private void loadDownloadInfo() {
 			Date date = new Date();
-			SimpleDateFormat ymFormat = new SimpleDateFormat("yyyyMM");
-			SimpleDateFormat dhFormat = new SimpleDateFormat("ddHH");
+			SimpleDateFormat ymFormat = new SimpleDateFormat("yyMMdd");
+			SimpleDateFormat dhFormat = new SimpleDateFormat("HHmm");
 			//生成文件名
 			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(destUrl).toUpperCase();
 			Pattern pattern = Pattern.compile("[.][\\w]+?$");
