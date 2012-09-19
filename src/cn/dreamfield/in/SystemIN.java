@@ -13,7 +13,7 @@ import cn.dreamfield.utils.SpringUtil;
 import cn.jinren.filter.NetImageFilter;
 import cn.jinren.test.KK;
 
-public class Test {
+public class SystemIN {
 
 	public static void main(String[] args) throws IOException {
 		LoadAll();

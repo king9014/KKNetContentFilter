@@ -64,7 +64,36 @@ public class HttpDownloadUtil {
 	public void DownloadHtmlFromURL(Spiderable spiderable) {
 		//防止同一篇文章的重复下载
 		NetArticle originArticle = netArticleDao.getNetArticleEntity(spiderable.getURL());
-		if(null == originArticle || "N".equals(originArticle.getIsExist())) {
+		if(null == originArticle) {
+			KK.WARN("DownloadHtmlFromURL(Spiderable)-->此方法不能在数据库中创建新文章");
+			return;
+		} else if("N".equals(originArticle.getIsExist())) {
+			HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, 0);
+			KK.DEBUG(spiderable.getURL());
+			htmlDownloadThreadPool.execute(downloadThread);
+		}
+	}
+	
+	/**
+	 * 此方法用于直接下载单篇文章 2012年9月19日 20:51:20
+	 * @param spiderable
+	 * @param category
+	 */
+	public void DownloadHtmlFromURL(Spiderable spiderable, String category) {
+		//防止同一篇文章的重复下载
+		NetArticle originArticle = netArticleDao.getNetArticleEntity(spiderable.getURL());
+		if(null == originArticle) {
+			NetArticle netArticle = new NetArticle();
+			netArticle.setCategory(category);
+			netArticle.setOriginUrl(spiderable.getURL()); 		//item0 --- url
+			netArticle.setIsExist("N"); 						//文章还没有本地化，暂时设为N
+			netArticle.setName("BLANK");						//在此创建的文章需要在Filter里填写标题
+			netArticle.setOptDate(new Date());
+			netArticleDao.saveNetArticle(netArticle);
+			HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, 0);
+			KK.DEBUG(spiderable.getURL());
+			htmlDownloadThreadPool.execute(downloadThread);
+		} else if("N".equals(originArticle.getIsExist())) {
 			HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, 0);
 			KK.DEBUG(spiderable.getURL());
 			htmlDownloadThreadPool.execute(downloadThread);
