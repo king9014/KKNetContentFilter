@@ -45,9 +45,9 @@ public class NewsListSpiderable implements ListSpiderable {
 	public String getItemPatt(int ItemNo) {
 		switch(ItemNo) {
 		case 0:
-			return "</span><a href=\"(.+?)\" target=\"_blank\">";
+			return "</span><a href=\"(.+?)\" target=\"_blank\"";
 		case 1:
-			return "\" target=\"_blank\">(.+?)</a>";
+			return "\" target=\"_blank\".*?>(.+?)</a>";
 		}
 		return "============";
 	}
