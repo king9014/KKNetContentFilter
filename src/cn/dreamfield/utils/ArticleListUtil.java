@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.spiderable.GameNewsContentSpiderable;
+import cn.dreamfield.spiderable.NewsContentSpiderable;
 import cn.dreamfield.spiderable.NewsListSpiderable;
 import cn.jinren.filter.TitleFilter;
 import cn.jinren.spider.Element;
@@ -78,11 +78,11 @@ public class ArticleListUtil {
 				netArticleDao.saveNetArticle(netArticle);
 				HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
 				//游侠网的新闻内容 ---GameNewsContentSpiderable
-				h.DownloadHtmlFromURL(new GameNewsContentSpiderable(destUrl));
+				h.DownloadHtmlFromURL(new NewsContentSpiderable(destUrl));
 			} else if("N".equals(originArticle.getIsExist())) {
 				HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
 				//游侠网的新闻内容 ---GameNewsContentSpiderable
-				h.DownloadHtmlFromURL(new GameNewsContentSpiderable(destUrl));
+				h.DownloadHtmlFromURL(new NewsContentSpiderable(destUrl));
 			}
 		}
 	}

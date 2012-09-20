@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.spiderable.GameNewsContentSpiderable;
+import cn.dreamfield.spiderable.NewsContentSpiderable;
 import cn.dreamfield.utils.HttpDownloadUtil;
 import cn.dreamfield.utils.SpringUtil;
 import cn.jinren.test.KK;
@@ -42,11 +42,11 @@ public class PaginationFilter implements StrFilter {
 					SpringUtil.ctx.getBean(NetArticleDao.class).saveNetArticle(cArticle);
 					HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
 					//游侠网的新闻内容 ---GameNewsContentSpiderable
-					httpDownloadUtils.DownloadHtmlFromURL(new GameNewsContentSpiderable(nextUrl));
+					httpDownloadUtils.DownloadHtmlFromURL(new NewsContentSpiderable(nextUrl));
 				} else if("N".equals(originArticle.getIsExist())) {
 					HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
 					//游侠网的新闻内容 ---GameNewsContentSpiderable
-					h.DownloadHtmlFromURL(new GameNewsContentSpiderable(nextUrl));
+					h.DownloadHtmlFromURL(new NewsContentSpiderable(nextUrl));
 				}
 			}
 			pa = Pattern.compile("class=\"currpage\"[\\D]+?([\\d]+?)[\\D]+?");

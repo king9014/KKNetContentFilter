@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kkspider-configuration>
+	<website>
+		<listspiderable name=""/>
+		<contentspiderable name=""/>
+		<listurls>
+			<listurl url="" category=""/>
+			<listurl url="" category=""/>
+			<listurl url="" category=""/>
+			<listurl url="" category=""/>
+			<listurl url="" category=""/>
+		</listurls>
+	</website>
+</kkspider-configuration>

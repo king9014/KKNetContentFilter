@@ -5,7 +5,7 @@ import java.util.List;
 
 import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.spiderable.GameNewsContentSpiderable;
+import cn.dreamfield.spiderable.NewsContentSpiderable;
 import cn.dreamfield.utils.ArticleListUtil;
 import cn.dreamfield.utils.GenerateListFileUtil;
 import cn.dreamfield.utils.HttpDownloadUtil;
@@ -17,15 +17,17 @@ public class SystemIN {
 
 	public static void main(String[] args) throws IOException {
 		//LoadAll();
-		generateList();
+		//generateList();
 		//reLoadN();
+		
+		
 	}
 	
 	public static void reLoadN() {
 		List<NetArticle> list = SpringUtil.ctx.getBean(NetArticleDao.class).getNetArticleN();
 		for(NetArticle n : list) {
 			KK.INFO("[HTML RELOAD]: " + n.getOriginUrl()); 
-			SpringUtil.ctx.getBean(HttpDownloadUtil.class).DownloadHtmlFromURL(new GameNewsContentSpiderable(n.getOriginUrl()));
+			SpringUtil.ctx.getBean(HttpDownloadUtil.class).DownloadHtmlFromURL(new NewsContentSpiderable(n.getOriginUrl()));
 		}
 	}
 	

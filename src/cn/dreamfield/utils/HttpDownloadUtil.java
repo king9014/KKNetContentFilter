@@ -41,7 +41,7 @@ public class HttpDownloadUtil {
 	private static int BUFFER_SIZE = 4096; //缓冲区大小
 	private static int IMG_DOWN_THREAD_NUM = 5; 
 	private static int IMG_MAX_RELOAD_NUM = 3;
-	private static int HTML_DOWN_THREAD_NUM = 1;
+	private static int HTML_DOWN_THREAD_NUM = 2;
 	private static int HTML_MAX_RELOAD_NUM = 2;
 	private static String FILE_ROOT = "c:/kdownload/";
 	private static String IMG_FILE_ROOT = FILE_ROOT + "image/";
@@ -164,11 +164,17 @@ public class HttpDownloadUtil {
 			isStarted = true;
 		}
 		
-		private synchronized void downloadFile() throws IOException {
-			String str = KKContentSpider.getContentString(spiderable, "gbk");
+		/**
+		 * synchronized 主要考虑到在NetImageFilter中会新建下载线程，造成netArticle==null的可能性增加了
+		 * @param str
+		 * @throws IOException
+		 */
+		private synchronized void articlePersistent(String str) throws IOException {
 			//拿到对应未本地化的数据模型
 			NetArticle netArticle = netArticleDao.getNetArticleEntity(spiderable.getURL());
-			if(null != netArticle && "N".equals(netArticle.getIsExist())) {
+			if(null == netArticle) {
+				throw new IOException("NetArticle--NULL");
+			} else if("N".equals(netArticle.getIsExist())) {
 				StrFilterChain chain = new StrFilterChain();
 				chain.addStrFilter(new PaginationFilter(netArticle))
 					.addStrFilter(new NetImageFilter(netArticle))
@@ -187,6 +193,11 @@ public class HttpDownloadUtil {
 				netArticle.setIsExist("Y");
 				netArticleDao.updateNetArticle(netArticle);
 			}
+		}
+		
+		private void downloadFile() throws IOException {
+			String str = KKContentSpider.getContentString(spiderable, "gbk");
+			articlePersistent(str);
 		}
 	}
 	
