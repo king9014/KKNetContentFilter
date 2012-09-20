@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import cn.dreamfield.utils.UtilConst;
+
 /**
  * SIMPLE LOG FOR TEST
  * @author KING
@@ -13,7 +15,7 @@ import java.util.Date;
  */
 public class KK {
 	
-	private static String LOG_FILE_ROOT = "c:/kdownload/log/";
+	private static String LOG_FILE_ROOT = UtilConst.FILE_ROOT + "log/";
 	
 	public static void LOG(Object o) {
 		Date date = new Date();

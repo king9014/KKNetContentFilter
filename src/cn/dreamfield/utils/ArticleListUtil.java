@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 
 import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.spiderable.NewsContentSpiderable;
-import cn.dreamfield.spiderable.NewsListSpiderable;
+import cn.dreamfield.spiderable.SpiderableConst;
 import cn.jinren.filter.TitleFilter;
 import cn.jinren.spider.Element;
 import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.ListSpiderable;
+import cn.jinren.spider.Spiderable;
 import cn.jinren.test.KK;
 
 @Component
@@ -22,18 +22,17 @@ public class ArticleListUtil {
 	
 	@Autowired
 	private NetArticleDao netArticleDao;
-	private ArrayList<UrlAndCategory> urls = new ArrayList<UrlAndCategory>();  
+	private ArrayList<UrlAndCategory> ucs = new ArrayList<UrlAndCategory>();  
 	
+	public void setUrls(ArrayList<UrlAndCategory> ucs) {
+		this.ucs = ucs;
+	}
+
 	public ArticleListUtil() {
-		urls.add(new UrlAndCategory("http://www.ali213.net/News/listhtml/List_1_1.html", "pcnews"));
-		urls.add(new UrlAndCategory("http://www.ali213.net/News/listhtml/List_7_1.html", "tvnews"));
-		urls.add(new UrlAndCategory("http://www.ali213.net/News/listhtml/List_8_1.html", "phonenews"));
-		urls.add(new UrlAndCategory("http://www.ali213.net/News/listhtml/List_3_1.html", "gametest"));
-		urls.add(new UrlAndCategory("http://www.ali213.net/News/listhtml/List_9_1.html", "gamefuture"));
 	}
 	
 	public void startListSpider() {
-		for(UrlAndCategory uc : urls) {
+		for(UrlAndCategory uc : ucs) {
 			runListSpider(uc, 0);
 		}
 	}
@@ -44,8 +43,16 @@ public class ArticleListUtil {
 		} catch (InterruptedException e1) {
 			KK.ERROR(e1);
 		}
-		//游侠网的新闻列表---NewsListSpiderable
-		ListSpiderable listSpiderable = new NewsListSpiderable(uc.url);
+		ListSpiderable listSpiderable = null;
+		//更加xml配置文件获得对应的ListSpiderable
+		try {
+			listSpiderable = (ListSpiderable)Class.forName(SpiderableConst.LIST_SPIDERABLE_NAME).newInstance();
+			listSpiderable.setURL(uc.getUrl());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//游侠网的新闻列表---AliNewsListSpiderable
+		//ListSpiderable listSpiderable = new AliNewsListSpiderable(uc.url);
 		ArrayList<Element> elements = new ArrayList<Element>();
 		try {
 			KKContentSpider.getElementsFromWeb(listSpiderable, elements, "gbk");
@@ -68,7 +75,7 @@ public class ArticleListUtil {
 			NetArticle originArticle = netArticleDao.getNetArticleEntity(destUrl);
 			if(null == originArticle) {
 				NetArticle netArticle = new NetArticle();
-				netArticle.setCategory(uc.category);
+				netArticle.setCategory(uc.getCategory());
 				netArticle.setOriginUrl(destUrl); 			//item0 --- url
 				netArticle.setIsExist("N"); 				//文章还没有本地化，暂时设为N
 				String title = element.getItem1();			//item1 --- name	
@@ -77,22 +84,31 @@ public class ArticleListUtil {
 				netArticle.setOptDate(new Date());
 				netArticleDao.saveNetArticle(netArticle);
 				HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
-				//游侠网的新闻内容 ---GameNewsContentSpiderable
-				h.DownloadHtmlFromURL(new NewsContentSpiderable(destUrl));
+				Spiderable contentSpiderable = null;
+				//更加xml配置文件获得对应的ContentSpiderable
+				try {
+					contentSpiderable = (Spiderable)Class.forName(SpiderableConst.CONTENT_SPIDERABLE_NAME).newInstance();
+					contentSpiderable.setURL(destUrl);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				//游侠网的新闻内容 ---AliNewsContentSpiderable
+				h.DownloadHtmlFromURL(contentSpiderable);
 			} else if("N".equals(originArticle.getIsExist())) {
+				Spiderable contentSpiderable = null;
+				//更加xml配置文件获得对应的ContentSpiderable
+				try {
+					contentSpiderable = (Spiderable)Class.forName(SpiderableConst.CONTENT_SPIDERABLE_NAME).newInstance();
+					contentSpiderable.setURL(destUrl);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
-				//游侠网的新闻内容 ---GameNewsContentSpiderable
-				h.DownloadHtmlFromURL(new NewsContentSpiderable(destUrl));
+				//游侠网的新闻内容 ---AliNewsContentSpiderable
+				h.DownloadHtmlFromURL(contentSpiderable);
 			}
 		}
 	}
 	
-	class UrlAndCategory {
-		private String url;
-		private String category;
-		public UrlAndCategory(String url, String category) {
-			this.url = url;
-			this.category = category;
-		}
-	}
+	
 }

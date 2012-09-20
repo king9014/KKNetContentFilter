@@ -5,30 +5,34 @@ import java.util.List;
 
 import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.spiderable.NewsContentSpiderable;
+import cn.dreamfield.spiderable.AliNewsContentSpiderable;
 import cn.dreamfield.utils.ArticleListUtil;
 import cn.dreamfield.utils.GenerateListFileUtil;
 import cn.dreamfield.utils.HttpDownloadUtil;
 import cn.dreamfield.utils.SpringUtil;
+import cn.dreamfield.utils.XmlConfigReaderUtil;
 import cn.jinren.filter.NetImageFilter;
 import cn.jinren.test.KK;
 
 public class SystemIN {
 
 	public static void main(String[] args) throws IOException {
-		//LoadAll();
-		//generateList();
+		//loadAllByXMLConfig();
+		generateList();
 		//reLoadN();
-		
-		
 	}
 	
 	public static void reLoadN() {
 		List<NetArticle> list = SpringUtil.ctx.getBean(NetArticleDao.class).getNetArticleN();
 		for(NetArticle n : list) {
 			KK.INFO("[HTML RELOAD]: " + n.getOriginUrl()); 
-			SpringUtil.ctx.getBean(HttpDownloadUtil.class).DownloadHtmlFromURL(new NewsContentSpiderable(n.getOriginUrl()));
+			SpringUtil.ctx.getBean(HttpDownloadUtil.class).DownloadHtmlFromURL(new AliNewsContentSpiderable(n.getOriginUrl()));
 		}
+	}
+	
+	public static void loadAllByXMLConfig() {
+		XmlConfigReaderUtil xmlUtil = new XmlConfigReaderUtil();
+		xmlUtil.readParameterFromConfigXML();
 	}
 	
 	public static void generateList() {

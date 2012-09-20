@@ -18,10 +18,14 @@ public class GenerateListFileUtil {
 	@Autowired
 	private NetArticleDao netArticleDao;
 	
-	private static String LIST_FILE_ROOT = "c:/kdownload/list/";
-	private static String IMG_FILE_ROOT = "c:/kdownload/image/";
+	private static String LIST_FILE_ROOT = UtilConst.FILE_ROOT + "list/";
+	private static String IMG_FILE_ROOT = UtilConst.FILE_ROOT + "image/";
 	private static double IMG_SMALL_WIDTH = 136; //Àı¬‘ÕºøÌ
 	private static double IMG_SMALL_HIGTH = 76;  //Àı¬‘Õº∏ﬂ
+	
+	public void sys() {
+		KK.INFO(LIST_FILE_ROOT);
+	}
 	
 	public GenerateListFileUtil() {
 		File file = new File(LIST_FILE_ROOT);

@@ -2,17 +2,18 @@ package cn.dreamfield.spiderable;
 
 import cn.jinren.spider.ListSpiderable;
 
-public class NewsListSpiderable implements ListSpiderable {
+public class AliNewsListSpiderable implements ListSpiderable {
 	
 	private String url = "http://www.ali213.net/News/listhtml/List_1_1.html";
 
-	public void setUrl(String url) {
+	@Override
+	public void setURL(String url) {
 		this.url = url;
 	}
 	
-	public NewsListSpiderable() {}
+	public AliNewsListSpiderable() {}
 	
-	public NewsListSpiderable(String url) {
+	public AliNewsListSpiderable(String url) {
 		this.url = url;
 	}
 

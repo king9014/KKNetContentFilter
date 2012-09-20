@@ -6,9 +6,10 @@ import java.util.regex.Pattern;
 
 import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.spiderable.NewsContentSpiderable;
+import cn.dreamfield.spiderable.SpiderableConst;
 import cn.dreamfield.utils.HttpDownloadUtil;
 import cn.dreamfield.utils.SpringUtil;
+import cn.jinren.spider.Spiderable;
 import cn.jinren.test.KK;
 
 public class PaginationFilter implements StrFilter {
@@ -40,13 +41,29 @@ public class PaginationFilter implements StrFilter {
 					cArticle.setIsExist("N"); 				//文章还没有本地化，暂时设为N
 					cArticle.setOptDate(new Date());
 					SpringUtil.ctx.getBean(NetArticleDao.class).saveNetArticle(cArticle);
+					Spiderable contentSpiderable = null;
+					//更加xml配置文件获得对应的ContentSpiderable
+					try {
+						contentSpiderable = (Spiderable)Class.forName(SpiderableConst.CONTENT_SPIDERABLE_NAME).newInstance();
+						contentSpiderable.setURL(nextUrl);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
 					//游侠网的新闻内容 ---GameNewsContentSpiderable
-					httpDownloadUtils.DownloadHtmlFromURL(new NewsContentSpiderable(nextUrl));
+					httpDownloadUtils.DownloadHtmlFromURL(contentSpiderable);
 				} else if("N".equals(originArticle.getIsExist())) {
+					Spiderable contentSpiderable = null;
+					//更加xml配置文件获得对应的ContentSpiderable
+					try {
+						contentSpiderable = (Spiderable)Class.forName(SpiderableConst.CONTENT_SPIDERABLE_NAME).newInstance();
+						contentSpiderable.setURL(nextUrl);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
 					//游侠网的新闻内容 ---GameNewsContentSpiderable
-					h.DownloadHtmlFromURL(new NewsContentSpiderable(nextUrl));
+					h.DownloadHtmlFromURL(contentSpiderable);
 				}
 			}
 			pa = Pattern.compile("class=\"currpage\"[\\D]+?([\\d]+?)[\\D]+?");

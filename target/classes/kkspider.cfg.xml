@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kkspider-configuration>
+<configs>
+	<property name="file_root">c:/kdownload/</property>
+	<property name="is_image_download">true</property>
+	<property name="change_image_url">true</property>
+</configs>
+<websites>
 	<website>
-		<listspiderable name=""/>
-		<contentspiderable name=""/>
+		<listspiderable name="cn.dreamfield.spiderable.AliNewsListSpiderable"/>
+		<contentspiderable name="cn.dreamfield.spiderable.AliNewsContentSpiderable"/>
 		<listurls>
-			<listurl url="" category=""/>
-			<listurl url="" category=""/>
-			<listurl url="" category=""/>
-			<listurl url="" category=""/>
-			<listurl url="" category=""/>
+			<listurl url="http://www.ali213.net/News/listhtml/List_1_1.html" category="pcnews"/>
+			<listurl url="http://www.ali213.net/News/listhtml/List_7_1.html" category="tvnews"/>
+			<listurl url="http://www.ali213.net/News/listhtml/List_8_1.html" category="phonenews"/>
+			<listurl url="http://www.ali213.net/News/listhtml/List_3_1.html" category="gametest"/>
+			<listurl url="http://www.ali213.net/News/listhtml/List_9_1.html" category="gamefuture"/>
 		</listurls>
 	</website>
+</websites>
 </kkspider-configuration>

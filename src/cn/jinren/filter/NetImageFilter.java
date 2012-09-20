@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import cn.dreamfield.model.NetArticle;
 import cn.dreamfield.utils.HttpDownloadUtil;
 import cn.dreamfield.utils.SpringUtil;
+import cn.dreamfield.utils.UtilConst;
 import cn.jinren.test.KK;
 
 /**
@@ -32,13 +33,17 @@ public class NetImageFilter implements StrFilter {
 			if(imageUrl.startsWith("/") | imageUrl.startsWith("../") | imageUrl.startsWith("../../")) {
 				KK.LOG(imageUrl);
 			}
-			HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
-			String relativePath = httpDownloadUtils.DownloadImageFromURL(imageUrl);
-			if(isFirstImg) {
-				isFirstImg = false;
-				netArticle.setImgUrl(relativePath);
+			if(UtilConst.IS_IMAGE_DOWNLOAD) {
+				HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
+				String relativePath = httpDownloadUtils.DownloadImageFromURL(imageUrl);
+				if(isFirstImg) {
+					isFirstImg = false;
+					netArticle.setImgUrl(relativePath);
+				}
+				if(UtilConst.CHANGE_IMAGE_URL) {
+					result = result.replaceAll(imageUrl, "../../image/" + relativePath);
+				}
 			}
-			result = result.replaceAll(imageUrl, "../../image/" + relativePath);
 		}
 		return result;
 	}

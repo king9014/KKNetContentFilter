@@ -43,7 +43,7 @@ public class HttpDownloadUtil {
 	private static int IMG_MAX_RELOAD_NUM = 3;
 	private static int HTML_DOWN_THREAD_NUM = 2;
 	private static int HTML_MAX_RELOAD_NUM = 2;
-	private static String FILE_ROOT = "c:/kdownload/";
+	private static String FILE_ROOT = UtilConst.FILE_ROOT;
 	private static String IMG_FILE_ROOT = FILE_ROOT + "image/";
 	private static String HTML_FILE_ROOT = FILE_ROOT + "html/";
 	
