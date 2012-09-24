@@ -20,6 +20,7 @@
 		<property name="category" column="CATEGORY"/>
 		<property name="pid" column="PID"/>
 		<property name="intro" column="INTRO"/>
+		<property name="website" column="WEBSITE"/>
 		
 	</class>
 </hibernate-mapping>

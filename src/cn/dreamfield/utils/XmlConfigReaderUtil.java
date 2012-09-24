@@ -2,6 +2,7 @@ package cn.dreamfield.utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import org.dom4j.Document;
@@ -14,6 +15,16 @@ import cn.jinren.test.KK;
 
 public class XmlConfigReaderUtil {
 	private File inputXml;
+	private ArrayList<UrlAndCategory> ucs = new ArrayList<UrlAndCategory>();
+	private HashMap<String, String> websiteMap = new HashMap<String,String>();
+
+	public HashMap<String, String> getWebsiteMap() {
+		return websiteMap;
+	}
+
+	public ArrayList<UrlAndCategory> getUcs() {
+		return ucs;
+	}
 
 	public XmlConfigReaderUtil() {
     	this.inputXml = new File("./src/kkspider.cfg.xml");
@@ -38,7 +49,7 @@ public class XmlConfigReaderUtil {
     	return getDocument().getRootElement();
 	}
     
-    public void readParameterFromConfigXML() {
+    public void readConfigXMLAndstartListSpider(Boolean isStart) {
     	Element root = getRootElement();
 		for (Iterator<?> ie = root.elementIterator(); ie.hasNext();) {
 			Element element = (Element) ie.next();
@@ -46,7 +57,7 @@ public class XmlConfigReaderUtil {
 			if ("configs".equals(element.getName())){
 				readConfigs(element);
 			} else if("websites".equals(element.getName())) {
-				readWebsites(element);
+				readWebsites(element, isStart);
 			}
 	    }
     }
@@ -73,17 +84,22 @@ public class XmlConfigReaderUtil {
 	    }
 	}
 
-	public void readWebsites(Element websites) {
+	public void readWebsites(Element websites, Boolean isStart) {
     	for (Iterator<?> ie = websites.elementIterator(); ie.hasNext();) {
 			Element website = (Element) ie.next();
+			//读取站点名称
+			if(null != website.attributeValue("name")) {
+				SpiderableConst.WEBSITE_NAME = website.attributeValue("name");
+				KK.INFO(SpiderableConst.WEBSITE_NAME);
+			}
 			for (Iterator<?> iee = website.elementIterator(); iee.hasNext();) {
 				Element item = (Element) iee.next();
-				ArrayList<UrlAndCategory> ucs = new ArrayList<UrlAndCategory>();
 				if("listspiderable".equals(item.getName())) {
 					SpiderableConst.LIST_SPIDERABLE_NAME = item.attributeValue("name");
 					KK.INFO(item.attributeValue("name"));
 				} else if("contentspiderable".equals(item.getName())) {
 					SpiderableConst.CONTENT_SPIDERABLE_NAME = item.attributeValue("name");
+					websiteMap.put(SpiderableConst.WEBSITE_NAME, SpiderableConst.CONTENT_SPIDERABLE_NAME);
 					KK.INFO(item.attributeValue("name"));
 				} else if("listurls".equals(item.getName())) {
 					for (Iterator<?> ieee = item.elementIterator(); ieee.hasNext();) {
@@ -92,9 +108,11 @@ public class XmlConfigReaderUtil {
 				    }
 				}
 				//一个website读取完成
-				ArticleListUtil articleListUtil = SpringUtil.ctx.getBean(ArticleListUtil.class);
-				articleListUtil.setUrls(ucs);
-				articleListUtil.startListSpider();
+				if(isStart) {
+					ArticleListUtil articleListUtil = SpringUtil.ctx.getBean(ArticleListUtil.class);
+					articleListUtil.setUrls(ucs);
+					articleListUtil.startListSpider();
+				}
 		    }
 	    }
     }

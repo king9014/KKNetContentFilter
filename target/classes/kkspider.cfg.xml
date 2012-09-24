@@ -3,10 +3,10 @@
 <configs>
 	<property name="file_root">c:/kdownload/</property>
 	<property name="is_image_download">true</property>
-	<property name="change_image_url">true</property>
+	<property name="change_image_url">false</property>
 </configs>
 <websites>
-	<website>
+	<website name="youxia">
 		<listspiderable name="cn.dreamfield.spiderable.AliNewsListSpiderable"/>
 		<contentspiderable name="cn.dreamfield.spiderable.AliNewsContentSpiderable"/>
 		<listurls>

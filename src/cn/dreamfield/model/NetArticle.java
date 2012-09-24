@@ -18,7 +18,14 @@ public class NetArticle {
 	private String category;
 	private Long pid;
 	private String intro;
+	private String website;
 	
+	public String getWebsite() {
+		return website;
+	}
+	public void setWebsite(String website) {
+		this.website = website;
+	}
 	public String getIntro() {
 		return intro;
 	}

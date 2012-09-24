@@ -36,20 +36,23 @@ public class GenerateListFileUtil {
 	
 	public void generateList(String category) {
 		List<NetArticle> list = netArticleDao.getNetArticleIn(category);
-		String str = "";
+		String str = "<table width=\"600\" border=\"0\" align=\"center\">";
 		for(NetArticle na : list) {
-			str += "<a href='../html/" + na.getHtmlUrl() + "'>" + na.getName() + "</a>&nbsp;&nbsp;";
+			str += "<tr><td colspan=\"2\"><a href='../html/" + na.getHtmlUrl() + "'>" + na.getName() + "</a></td></tr>";
+			str += "<tr><td width=\"442\">" + na.getIntro() + "</td>";
 			if(null == na.getImgUrl() || "null".equals(na.getImgUrl())) {
+				str += "<td width=\"142\" rowspan=\"2\">&nbsp;</td></tr>";
 			} else {
-				str += "<a href='../image/" + na.getImgUrl() + "'>Õº∆¨</a>&nbsp;&nbsp;";
+				str += "<td width=\"142\" rowspan=\"2\"><img src='../ico/" + na.getImgUrlS() + "'/></td></tr>";
 				//…˙≥…Õº∆¨Àı¬‘Õº
 				String sImgUrl = ImageCutUtil.ImageCut(IMG_FILE_ROOT + na.getImgUrl(), IMG_SMALL_WIDTH, IMG_SMALL_HIGTH);
 				na.setImgUrlS(sImgUrl);
 				netArticleDao.updateNetArticle(na);
 			}
+			str += "<tr><td width=\"442\"><a href='../html/" + na.getHtmlUrl() + "'>" + na.getPageCorrent() + "</a>&nbsp;";
 			str = getArticleChild(na.getId(), str);
-			str += "<br>\r\n";
 		}
+		str += "</td></tr></table>";
 		try {
 			FileOutputStream fos = new FileOutputStream(LIST_FILE_ROOT + category + ".html");
 			fos.write(str.getBytes());
@@ -62,8 +65,11 @@ public class GenerateListFileUtil {
 	private String getArticleChild(Long id, String str) {
 		NetArticle childArticle = netArticleDao.getNetArticleChild(id);
 		if(null != childArticle) {
-			str += "<a href='../html/" + childArticle.getHtmlUrl() + "'>" + childArticle.getPageCorrent() + "</a>&nbsp;&nbsp;";
-			KK.DEBUG("<a href='../html/" + childArticle.getHtmlUrl() + "'>" + childArticle.getPageCorrent() + "</a>&nbsp;&nbsp;");
+			str += "<a href='../html/" + childArticle.getHtmlUrl() + "'>" + childArticle.getPageCorrent() + "</a>&nbsp;";
+			if(childArticle.getPageCorrent() % 20 == 0) {
+				str += "<br>";
+			}
+			KK.DEBUG("<a href='../html/" + childArticle.getHtmlUrl() + "'>" + childArticle.getPageCorrent() + "</a>&nbsp;");
 			str = getArticleChild(childArticle.getId(), str);
 		}
 		return str;

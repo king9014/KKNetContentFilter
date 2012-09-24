@@ -76,6 +76,7 @@ public class ArticleListUtil {
 			if(null == originArticle) {
 				NetArticle netArticle = new NetArticle();
 				netArticle.setCategory(uc.getCategory());
+				netArticle.setWebsite(SpiderableConst.WEBSITE_NAME);
 				netArticle.setOriginUrl(destUrl); 			//item0 --- url
 				netArticle.setIsExist("N"); 				//文章还没有本地化，暂时设为N
 				String title = element.getItem1();			//item1 --- name	

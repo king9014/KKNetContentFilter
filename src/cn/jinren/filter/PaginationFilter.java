@@ -37,6 +37,7 @@ public class PaginationFilter implements StrFilter {
 				if(null == originArticle) {
 					NetArticle cArticle = new NetArticle();
 					cArticle.setPid(netArticle.getId());	//重要 递归的重要环节
+					cArticle.setWebsite(SpiderableConst.WEBSITE_NAME);	
 					cArticle.setOriginUrl(nextUrl); 		//item0 --- url
 					cArticle.setIsExist("N"); 				//文章还没有本地化，暂时设为N
 					cArticle.setOptDate(new Date());
