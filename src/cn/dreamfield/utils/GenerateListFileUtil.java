@@ -20,8 +20,8 @@ public class GenerateListFileUtil {
 	
 	private static String LIST_FILE_ROOT = UtilConst.FILE_ROOT + "list/";
 	private static String IMG_FILE_ROOT = UtilConst.FILE_ROOT + "image/";
-	private static double IMG_SMALL_WIDTH = 136; //Àı¬‘ÕºøÌ
-	private static double IMG_SMALL_HIGTH = 76;  //Àı¬‘Õº∏ﬂ
+	private static double IMG_SMALL_WIDTH = 122; //Àı¬‘ÕºøÌ
+	private static double IMG_SMALL_HIGTH = 110; //Àı¬‘Õº∏ﬂ
 	
 	public void sys() {
 		KK.INFO(LIST_FILE_ROOT);
@@ -43,11 +43,11 @@ public class GenerateListFileUtil {
 			if(null == na.getImgUrl() || "null".equals(na.getImgUrl())) {
 				str += "<td width=\"142\" rowspan=\"2\">&nbsp;</td></tr>";
 			} else {
-				str += "<td width=\"142\" rowspan=\"2\"><img src='../ico/" + na.getImgUrlS() + "'/></td></tr>";
 				//…˙≥…Õº∆¨Àı¬‘Õº
 				String sImgUrl = ImageCutUtil.ImageCut(IMG_FILE_ROOT + na.getImgUrl(), IMG_SMALL_WIDTH, IMG_SMALL_HIGTH);
 				na.setImgUrlS(sImgUrl);
 				netArticleDao.updateNetArticle(na);
+				str += "<td width=\"142\" rowspan=\"2\"><img src='../ico/" + na.getImgUrlS() + "'/></td></tr>";
 			}
 			str += "<tr><td width=\"442\"><a href='../html/" + na.getHtmlUrl() + "'>" + na.getPageCorrent() + "</a>&nbsp;";
 			str = getArticleChild(na.getId(), str);

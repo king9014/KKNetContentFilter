@@ -16,8 +16,6 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
-import cn.jinren.test.KK;
-
 public class ImageCutUtil {
 	
 	private static String ICO_FILE_ROOT = "c:/kdownload/ico/";
@@ -74,9 +72,11 @@ public class ImageCutUtil {
 					ImageIO.write(tag, matcher.group(1).toUpperCase(), new File(destPath));
 				}
 				imageScale(destPath, standardWidth, standardHeight);
+		    } else {
+		    	relativePath = null;
 		    }
 		} catch (Exception e) {
-		    KK.ERROR(e);
+		    e.printStackTrace();
 		}
 		return relativePath;
 	}
@@ -96,7 +96,7 @@ public class ImageCutUtil {
 				ImageIO.write(tag, matcher.group(1).toUpperCase(), new File(srcImageFile)); // 输出到文件流
 		    }
 		} catch (IOException e) {
-		    KK.ERROR(e);
+			e.printStackTrace();
 		}
 	}
 }
