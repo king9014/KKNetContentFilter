@@ -38,6 +38,9 @@ public class GenerateListFileUtil {
 		List<NetArticle> list = netArticleDao.getNetArticleIn(category);
 		String str = "<table width=\"600\" border=\"0\" align=\"center\">";
 		for(NetArticle na : list) {
+			if(null != na.getImgUrlS() && !"".equals(na.getImgUrlS())) {
+				continue;
+			}
 			str += "<tr><td colspan=\"2\"><a href='../html/" + na.getHtmlUrl() + "'>" + na.getName() + "</a></td></tr>";
 			str += "<tr><td width=\"442\">" + na.getIntro() + "</td>";
 			if(null == na.getImgUrl() || "null".equals(na.getImgUrl())) {

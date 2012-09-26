@@ -120,6 +120,11 @@ public class HttpDownloadUtil {
 					downloadFile();
 				} catch (IOException e) {
 					if(reLoadNum < HTML_MAX_RELOAD_NUM) {
+						try {
+							Thread.sleep(1700);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 						KK.INFO("[HTML RELOAD]: " + "[" + reLoadNum + "] " + spiderable.getURL()); 
 						HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, ++ reLoadNum);
 						htmlDownloadThreadPool.execute(downloadThread);
@@ -219,6 +224,11 @@ public class HttpDownloadUtil {
 					downloadFile();
 				} catch (IOException e) {
 					if(reLoadNum < IMG_MAX_RELOAD_NUM) {
+						try {
+							Thread.sleep(1700);
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
 						KK.INFO("[IMG RELOAD]: " + destUrl); 
 						ImageDownloadThread downloadThread = new ImageDownloadThread(destUrl, ++ reLoadNum);
 						imageDownloadThreadPool.execute(downloadThread);
