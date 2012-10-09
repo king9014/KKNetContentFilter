@@ -66,14 +66,14 @@ public class KKContentSpider {
 	 */
 	public static void getElementsFromWeb(ListSpiderable spiderable, ArrayList<Element> elements, String decode) throws IOException {
 		String content = getContentString(spiderable, decode);
-        Pattern p = Pattern.compile(spiderable.getElementPatt());
+        Pattern p = Pattern.compile(spiderable.getElementPatt().replace("[KKSP]", "([\\w[\\W]]+?)"));
         Matcher m = p.matcher(content);//匹配Element
         while(m.find()) {
         	Boolean isSpidered = true;
         	Element element = new Element();
         	element.setCount(spiderable.getItemCount());
         	for(int i = 0; i < spiderable.getItemCount(); i++) {//取得Element中Item数目，并逐个匹配
-        		Pattern pa = Pattern.compile(spiderable.getItemPatt(i));
+        		Pattern pa = Pattern.compile(spiderable.getItemPatt(i).replace("[KKSP]", "([\\w[\\W]]+?)"));
             	Matcher ma = pa.matcher(m.group(1));
             	if(ma.find()) {
             		element.setItem(i, ma.group(1));

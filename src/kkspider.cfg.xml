@@ -6,7 +6,7 @@
 	<property name="change_image_url">false</property>
 </configs>
 <websites>
-	<website name="youxia">
+	<website name="youxia" decode="gbk">
 		<listspiderable name="cn.dreamfield.spiderable.AliNewsListSpiderable"/>
 		<contentspiderable name="cn.dreamfield.spiderable.AliNewsContentSpiderable"/>
 		<listurls>
@@ -15,6 +15,11 @@
 			<listurl url="http://www.ali213.net/News/listhtml/List_8_1.html" category="phonenews"/>
 			<listurl url="http://www.ali213.net/News/listhtml/List_3_1.html" category="gametest"/>
 			<listurl url="http://www.ali213.net/News/listhtml/List_9_1.html" category="gamefuture"/>
+		</listurls>
+	</website>
+	<website name="itouxian" decode="utf-8">
+		<listurls>
+			<listurl url="http://www.itouxian.com/" category="shouye"/>
 		</listurls>
 	</website>
 </websites>
