@@ -6,10 +6,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.dreamfield.model.NetInfo;
 import cn.jinren.test.KK;
 
 public class KKContentSpider {
@@ -90,6 +93,68 @@ public class KKContentSpider {
         	}
         	if(isSpidered) {
         		elements.add(element);
+        	}
+        }
+	}
+	
+	public static void getElementsFromWebx(ListSpiderable spiderable, ArrayList<NetInfo> elements, String decode) throws IOException {
+		String content = getContentString(spiderable, decode);
+        Pattern p = Pattern.compile(spiderable.getElementPatt().replace("[KKSP]", "([\\w[\\W]]+?)"));
+        Matcher m = p.matcher(content);//∆•≈‰Element
+        while(m.find()) {
+        	Boolean isSpidered = true;
+        	NetInfo netInfo = new NetInfo();
+        	Pattern pa = Pattern.compile(spiderable.getItemPatt(0).replace("[KKSP]", "([\\w[\\W]]+?)"));
+        	Matcher ma = pa.matcher(m.group(1));
+        	if(ma.find()) {
+        		netInfo.setInfoName(ma.group(1));
+        		KK.DEBUG("-Name-", ma.group(1));
+        	} else {
+        		isSpidered = false;
+        	}
+        	
+        	pa = Pattern.compile(spiderable.getItemPatt(1).replace("[KKSP]", "([\\w[\\W]]+?)"));
+        	ma = pa.matcher(m.group(1));
+        	if(ma.find()) {
+        		String url = ma.group(1);
+        		if(url.startsWith("/")) {
+        			url = spiderable.getURL().substring(0, spiderable.getURL().lastIndexOf("/")) + url;
+        		}
+        		netInfo.setInfoOriginUrl(url);
+        		KK.DEBUG("-Url-", url);
+        	}
+        	
+        	pa = Pattern.compile(spiderable.getItemPatt(2).replace("[KKSP]", "([\\w[\\W]]+?)"));
+        	ma = pa.matcher(m.group(1));
+        	if(ma.find()) {
+        		String imgUrl = ma.group(1);
+        		if(imgUrl.startsWith("/")) {
+        			imgUrl = spiderable.getURL().substring(0, spiderable.getURL().lastIndexOf("/")) + imgUrl;
+        		}
+        		netInfo.setInfoImgUrl(imgUrl);
+        		KK.DEBUG("-ImgUrl-", imgUrl);
+        	}
+        	
+        	pa = Pattern.compile(spiderable.getItemPatt(3).replace("[KKSP]", "([\\w[\\W]]+?)"));
+        	ma = pa.matcher(m.group(1));
+        	if(ma.find()) {
+        		try {
+					netInfo.setInfoDate(new SimpleDateFormat("yyyy-MM-dd").parse(ma.group(1)));
+				} catch (ParseException e) {
+					KK.ERROR(e);
+				}
+        		KK.DEBUG("-Date-", ma.group(1));
+        	}
+        	
+        	pa = Pattern.compile(spiderable.getItemPatt(4).replace("[KKSP]", "([\\w[\\W]]+?)"));
+        	ma = pa.matcher(m.group(1));
+        	if(ma.find()) {
+        		netInfo.setInfoIntro(ma.group(1));
+        		KK.DEBUG("-Intro-", ma.group(1));
+        	}
+        	
+        	if(isSpidered) {
+        		elements.add(netInfo);
         	}
         }
 	}

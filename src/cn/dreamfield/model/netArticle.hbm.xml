@@ -3,24 +3,19 @@
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-	<class name="cn.dreamfield.model.NetArticle" table="net_article">
-		<id name="id" column="ID">
+	<class name="cn.dreamfield.model.NetInfo" table="net_info">
+		<id name="infoId" column="INFO_ID">
 			<generator class="native"/>
 		</id>
-		<property name="name" column="NAME"/>
-		<property name="pageTotal" column="PAGE_TOTAL"/>
-		<property name="pageCorrent" column="PAGE_CORRENT"/>
-		<property name="date" column="DATE"/>
-		<property name="optDate" column="OPT_DATE"/>
-		<property name="htmlUrl" column="HTML_URL"/>
-		<property name="imgUrl" column="IMG_URL"/>
-		<property name="imgUrlS" column="IMG_URL_S"/>
-		<property name="isExist" column="IS_EXIST"/>
-		<property name="originUrl" column="ORIGIN_URL"/>
-		<property name="category" column="CATEGORY"/>
-		<property name="pid" column="PID"/>
-		<property name="intro" column="INTRO"/>
-		<property name="website" column="WEBSITE"/>
+		<property name="infoName" column="INFO_NAME"/>
+		<property name="infoWebsite" column="INFO_WEBSITE"/>
+		<property name="infoCategory" column="INFO_CATEGORY"/>
+		<property name="infoHtmlUrl" column="INFO_HTML_URL"/>
+		<property name="infoOriginUrl" column="INFO_ORIGIN_URL"/>
+		<property name="infoImgUrl" column="INFO_IMG_URL"/>
+		<property name="infoDate" column="INFO_DATE"/>
+		<property name="infoIntro" column="INFO_INTRO"/>
+		<property name="InfoCid" column="INFO_CID"/>
 		
 	</class>
 </hibernate-mapping>

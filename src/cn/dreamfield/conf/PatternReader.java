@@ -10,6 +10,8 @@ import cn.jinren.spider.Element;
 import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.ListSpiderable;
 import cn.jinren.spider.ListSpiderableImpl;
+import cn.jinren.spider.Spiderable;
+import cn.jinren.spider.SpiderableImpl;
 
 public class PatternReader {
 	
@@ -36,12 +38,18 @@ public class PatternReader {
 		listSpiderableImpl.setStart(PatternReader.getValue(website + ".list.start"));
 		listSpiderableImpl.setEnd(PatternReader.getValue(website + ".list.end"));
 		listSpiderableImpl.setElementPatt(PatternReader.getValue(website + ".list.elementPatt"));
-		int elementCount = Integer.parseInt(PatternReader.getValue(website + ".list.elementCount"));
-		listSpiderableImpl.setCount(elementCount);
-		for(int i=1; i<=elementCount; i++) {
-			listSpiderableImpl.addElements(PatternReader.getValue(website + ".list.element" + i));
-		}
+		listSpiderableImpl.addElements(PatternReader.getValue(website + ".list.elementName"));
+		listSpiderableImpl.addElements(PatternReader.getValue(website + ".list.elementUrl"));
+		listSpiderableImpl.addElements(PatternReader.getValue(website + ".list.elementImgUrl"));
+		listSpiderableImpl.addElements(PatternReader.getValue(website + ".list.elementDate"));
+		listSpiderableImpl.addElements(PatternReader.getValue(website + ".list.elementIntro"));
 		return listSpiderableImpl;
+	}
+	
+	public static Spiderable getContentSpiderable(String website) {
+		SpiderableImpl spiderableImpl = new SpiderableImpl();
+		// 2012年10月9日18:01:13
+		return spiderableImpl;
 	}
 	
 	// ListSpider测试入口

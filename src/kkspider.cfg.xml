@@ -22,5 +22,10 @@
 			<listurl url="http://www.itouxian.com/" category="shouye"/>
 		</listurls>
 	</website>
+	<website name="u148" decode="utf-8">
+		<listurls>
+			<listurl url="http://www.u148.net/text.html" category="text"/>
+		</listurls>
+	</website>
 </websites>
 </kkspider-configuration>
