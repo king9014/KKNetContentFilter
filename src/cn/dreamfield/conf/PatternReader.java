@@ -29,7 +29,7 @@ public class PatternReader {
 	}
 
 	public static String getValue(String key) {
-		return properties.getProperty(key, "[BLANK]");
+		return properties.getProperty(key, "#BLANK#");
 	}
 	
 	public static ListSpiderable getListSpiderable(String website) {
@@ -48,17 +48,17 @@ public class PatternReader {
 	
 	public static Spiderable getContentSpiderable(String website) {
 		SpiderableImpl spiderableImpl = new SpiderableImpl();
-		// 2012年10月9日18:01:13
+		spiderableImpl.setURL(PatternReader.getValue(website + ".content.url"));
+		spiderableImpl.setStart(PatternReader.getValue(website + ".content.start"));
+		spiderableImpl.setEnd(PatternReader.getValue(website + ".content.end"));
 		return spiderableImpl;
 	}
 	
 	// ListSpider测试入口
 	public static void main(String[] args) {
-		ListSpiderable l = PatternReader.getListSpiderable("youxia");
-		try {
-			KKContentSpider.getElementsFromWeb(l, new ArrayList<Element>(), "gbk");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Spiderable s = PatternReader.getContentSpiderable("youxia");
+		System.out.println(s.getURL());
+		System.out.println(s.getStart());
+		System.out.println(s.getEnd());
 	}
 }

@@ -3,7 +3,7 @@
 <configs>
 	<property name="file_root">c:/kdownload/</property>
 	<property name="is_image_download">true</property>
-	<property name="change_image_url">false</property>
+	<property name="change_image_url">true</property>
 </configs>
 <websites>
 	<website name="youxia" decode="gbk">
@@ -24,7 +24,16 @@
 	</website>
 	<website name="u148" decode="utf-8">
 		<listurls>
-			<listurl url="http://www.u148.net/text.html" category="text"/>
+			<!-- <listurl url="http://www.u148.net/text.html" category="text"/>
+			<listurl url="http://www.u148.net/text/2.html" category="text"/>
+			<listurl url="http://www.u148.net/text/3.html" category="text"/>
+			<listurl url="http://www.u148.net/text/4.html" category="text"/> -->
+			<listurl url="http://www.u148.net/text/5.html" category="text"/>
+			<listurl url="http://www.u148.net/text/6.html" category="text"/>
+			<listurl url="http://www.u148.net/text/7.html" category="text"/>
+			<listurl url="http://www.u148.net/text/8.html" category="text"/>
+			<listurl url="http://www.u148.net/text/9.html" category="text"/>
+			<listurl url="http://www.u148.net/text/10.html" category="text"/>
 		</listurls>
 	</website>
 </websites>

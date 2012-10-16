@@ -118,7 +118,7 @@ public class KKContentSpider {
         	if(ma.find()) {
         		String url = ma.group(1);
         		if(url.startsWith("/")) {
-        			url = spiderable.getURL().substring(0, spiderable.getURL().lastIndexOf("/")) + url;
+        			url = spiderable.getURL().substring(0, spiderable.getURL().indexOf("/", spiderable.getURL().indexOf("//") + 2)) + url;
         		}
         		netInfo.setInfoOriginUrl(url);
         		KK.DEBUG("-Url-", url);
@@ -129,7 +129,7 @@ public class KKContentSpider {
         	if(ma.find()) {
         		String imgUrl = ma.group(1);
         		if(imgUrl.startsWith("/")) {
-        			imgUrl = spiderable.getURL().substring(0, spiderable.getURL().lastIndexOf("/")) + imgUrl;
+        			imgUrl = spiderable.getURL().substring(0, spiderable.getURL().indexOf("/", spiderable.getURL().indexOf("//") + 2)) + imgUrl;
         		}
         		netInfo.setInfoImgUrl(imgUrl);
         		KK.DEBUG("-ImgUrl-", imgUrl);

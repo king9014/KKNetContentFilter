@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import cn.dreamfield.conf.PatternReader;
 import cn.dreamfield.conf.WebsiteConf;
 import cn.dreamfield.dao.NetArticleDao;
+import cn.dreamfield.dao.NetInfoDao;
 import cn.dreamfield.model.NetArticle;
 import cn.dreamfield.model.NetInfo;
 import cn.dreamfield.spiderable.SpiderableConst;
@@ -24,7 +25,7 @@ import cn.jinren.test.KK;
 public class ArticleListUtilx {
 	
 	@Autowired
-	private NetArticleDao netArticleDao;
+	private NetInfoDao netInfoDao;
 	private ArrayList<NetInfo> netInfos = new ArrayList<NetInfo>();
 	private WebsiteConf websiteConf;
 
@@ -76,13 +77,33 @@ public class ArticleListUtilx {
 		for(NetInfo netInfo : netInfos) {
 			netInfo.setInfoCategory(uc.getCategory());
 			netInfo.setInfoWebsite(websiteConf.getWebsiteName());
-			netInfo.setInfoOriginUrl(uc.getUrl());
 		}
 	}
 	
 	public void runContentSpider() {
 		for(NetInfo netInfo : netInfos) {
-			
+			NetInfo originInfo = netInfoDao.getNetInfoEntity(netInfo.getInfoOriginUrl());
+			if(null == originInfo) {
+				netInfo.setInfoStatus("N");
+				netInfoDao.saveNetInfo(netInfo);
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				Spiderable spiderable = PatternReader.getContentSpiderable(websiteConf.getWebsiteName());
+				spiderable.setURL(netInfo.getInfoOriginUrl());
+				SpringUtil.ctx.getBean(HttpDownloadUtilx.class).DownloadHtmlFromURL(spiderable, websiteConf.getDecode());
+			} else if("N".equals(originInfo.getInfoStatus())) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				Spiderable spiderable = PatternReader.getContentSpiderable(websiteConf.getWebsiteName());
+				spiderable.setURL(netInfo.getInfoOriginUrl());
+				SpringUtil.ctx.getBean(HttpDownloadUtilx.class).DownloadHtmlFromURL(spiderable, websiteConf.getDecode());
+			}
 		}
 	}
 	

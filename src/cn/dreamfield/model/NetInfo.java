@@ -12,7 +12,20 @@ public class NetInfo {
 	private String infoImgUrl;
 	private Date infoDate;
 	private String infoIntro;
-	private Long InfoCid;
+	private Long infoCid;
+	private String infoStatus;
+	public Long getInfoCid() {
+		return infoCid;
+	}
+	public void setInfoCid(Long infoCid) {
+		this.infoCid = infoCid;
+	}
+	public String getInfoStatus() {
+		return infoStatus;
+	}
+	public void setInfoStatus(String infoStatus) {
+		this.infoStatus = infoStatus;
+	}
 	public Long getInfoId() {
 		return infoId;
 	}
@@ -67,10 +80,5 @@ public class NetInfo {
 	public void setInfoIntro(String infoIntro) {
 		this.infoIntro = infoIntro;
 	}
-	public Long getInfoCid() {
-		return InfoCid;
-	}
-	public void setInfoCid(Long infoCid) {
-		InfoCid = infoCid;
-	} 
+	
 }

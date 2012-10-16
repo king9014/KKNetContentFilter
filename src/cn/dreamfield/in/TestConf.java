@@ -15,6 +15,7 @@ import cn.dreamfield.tempopt.TempOptUtil;
 import cn.dreamfield.utils.ArticleListUtilx;
 import cn.dreamfield.utils.HibernateUtil;
 import cn.dreamfield.utils.SpringUtil;
+import cn.jinren.test.KK;
 
 @Component
 public class TestConf {
@@ -25,9 +26,9 @@ public class TestConf {
 	public void generateWebsiteListByName(String websiteName) {
 		XmlConfigReader xReader = new XmlConfigReader();
 		xReader.readConfigXMLAndstartListSpider();
-		for(WebsiteConf w : KKConf.websiteConfs) {
-			if(w.getWebsiteName().equals(websiteName)) {
-				articleListUtilx.setWebsiteConf(w);
+		for(WebsiteConf wsc : KKConf.websiteConfs) {
+			if(wsc.getWebsiteName().equals(websiteName)) {
+				articleListUtilx.setWebsiteConf(wsc);
 				articleListUtilx.startListSpider();
 			}
 		}
@@ -41,6 +42,12 @@ public class TestConf {
 		SpringUtil.ctx.getBean(TestConf.class).generateWebsiteListByName("u148");
 		ArrayList<NetInfo> netInfos = SpringUtil.ctx.getBean(TestConf.class).articleListUtilx.getNetInfos();
 		TempOptUtil.trimTitleAndIntro(netInfos);
+		for(NetInfo n : SpringUtil.ctx.getBean(TestConf.class).articleListUtilx.getNetInfos()) {
+			KK.INFO(n.getInfoName());
+			KK.INFO(n.getInfoIntro());
+			KK.DEBUG("====================================");
+		}
+		SpringUtil.ctx.getBean(TestConf.class).articleListUtilx.runContentSpider();
 	}
 
 }

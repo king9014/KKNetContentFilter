@@ -22,6 +22,10 @@ public class NetImageFilter implements StrFilter {
 	public NetImageFilter(NetArticle netArticle) {
 		this.netArticle = netArticle;
 	}
+	
+	public NetImageFilter() {
+		isFirstImg = false;
+	}
 
 	@Override
 	public String doFilter(String str) {
