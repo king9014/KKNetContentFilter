@@ -2,20 +2,14 @@ package cn.dreamfield.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.dreamfield.conf.PatternReader;
 import cn.dreamfield.conf.WebsiteConf;
-import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.dao.NetInfoDao;
-import cn.dreamfield.model.NetArticle;
 import cn.dreamfield.model.NetInfo;
-import cn.dreamfield.spiderable.SpiderableConst;
-import cn.jinren.filter.TitleFilter;
-import cn.jinren.spider.Element;
 import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.ListSpiderable;
 import cn.jinren.spider.Spiderable;

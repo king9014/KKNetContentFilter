@@ -1,6 +1,8 @@
 package cn.dreamfield.in;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,6 +17,7 @@ import cn.dreamfield.tempopt.TempOptUtil;
 import cn.dreamfield.utils.ArticleListUtilx;
 import cn.dreamfield.utils.HibernateUtil;
 import cn.dreamfield.utils.SpringUtil;
+import cn.jinren.spider.KKContentSpider;
 import cn.jinren.test.KK;
 
 @Component

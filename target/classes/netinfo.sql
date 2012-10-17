@@ -35,6 +35,7 @@ CREATE TABLE `net_info` (
   `INFO_DATE` datetime DEFAULT NULL,
   `INFO_INTRO` varchar(255) DEFAULT NULL,
   `INFO_CID` int(11) DEFAULT NULL,
+  `INFO_STATUS` VARCHAR(1) NULL DEFAULT 'N',
   PRIMARY KEY (`INFO_ID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

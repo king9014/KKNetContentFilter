@@ -24,16 +24,16 @@
 	</website>
 	<website name="u148" decode="utf-8">
 		<listurls>
-			<!-- <listurl url="http://www.u148.net/text.html" category="text"/>
-			<listurl url="http://www.u148.net/text/2.html" category="text"/>
+			<listurl url="http://www.u148.net/text.html" category="text"/>
+			<!-- <listurl url="http://www.u148.net/text/2.html" category="text"/>
 			<listurl url="http://www.u148.net/text/3.html" category="text"/>
 			<listurl url="http://www.u148.net/text/4.html" category="text"/> -->
-			<listurl url="http://www.u148.net/text/5.html" category="text"/>
+			<!-- <listurl url="http://www.u148.net/text/5.html" category="text"/>
 			<listurl url="http://www.u148.net/text/6.html" category="text"/>
 			<listurl url="http://www.u148.net/text/7.html" category="text"/>
 			<listurl url="http://www.u148.net/text/8.html" category="text"/>
 			<listurl url="http://www.u148.net/text/9.html" category="text"/>
-			<listurl url="http://www.u148.net/text/10.html" category="text"/>
+			<listurl url="http://www.u148.net/text/10.html" category="text"/> -->
 		</listurls>
 	</website>
 </websites>

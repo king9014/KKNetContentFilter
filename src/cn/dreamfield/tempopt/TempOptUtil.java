@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import cn.dreamfield.model.NetInfo;
 import cn.dreamfield.utils.HttpDownloadUtil;
 import cn.dreamfield.utils.SpringUtil;
-import cn.jinren.filter.NetImageFilter;
+import cn.jinren.filter.NetImageFilterx;
 import cn.jinren.filter.StrFilter;
 import cn.jinren.filter.StrFilterChain;
 
@@ -32,7 +32,7 @@ public class TempOptUtil {
 	
 	public static StrFilterChain addTempChainAfterATag(StrFilterChain chain) {
 		u148TempFilterChain(chain);
-		chain.addStrFilter(new NetImageFilter());
+		chain.addStrFilter(new NetImageFilterx());
 		return chain;
 	}
 	

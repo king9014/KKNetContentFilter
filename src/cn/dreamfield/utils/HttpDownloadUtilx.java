@@ -16,20 +16,12 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import cn.dreamfield.dao.NetArticleDao;
+import cn.dreamfield.conf.KKConf;
 import cn.dreamfield.dao.NetInfoDao;
-import cn.dreamfield.model.NetArticle;
 import cn.dreamfield.model.NetInfo;
 import cn.dreamfield.tempopt.TempOptUtil;
 import cn.jinren.filter.ATagFilter;
-import cn.jinren.filter.IntroFilter;
-import cn.jinren.filter.NetImageFilter;
-import cn.jinren.filter.PaginationFilter;
-import cn.jinren.filter.PubDateFilter;
-import cn.jinren.filter.ScriptFilter;
-import cn.jinren.filter.SpecialStrFilter;
 import cn.jinren.filter.StrFilterChain;
-import cn.jinren.filter.TitleFilter;
 import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.Spiderable;
 import cn.jinren.test.KK;
@@ -46,9 +38,9 @@ public class HttpDownloadUtilx {
 	private static int IMG_MAX_RELOAD_NUM = 3;
 	private static int HTML_DOWN_THREAD_NUM = 2;
 	private static int HTML_MAX_RELOAD_NUM = 2;
-	private static String FILE_ROOT = UtilConst.FILE_ROOT;
-	private static String IMG_FILE_ROOT = FILE_ROOT + "image/";
-	private static String HTML_FILE_ROOT = FILE_ROOT + "html/";
+	private static String FILE_ROOT = KKConf.FILE_ROOT;
+	private static String IMG_FILE_ROOT = "/image/";
+	private static String HTML_FILE_ROOT = "/html/";
 	
 	private ExecutorService imageDownloadThreadPool = Executors.newFixedThreadPool(IMG_DOWN_THREAD_NUM);
 	private ExecutorService htmlDownloadThreadPool = Executors.newFixedThreadPool(HTML_DOWN_THREAD_NUM);
@@ -138,13 +130,13 @@ public class HttpDownloadUtilx {
 			SimpleDateFormat ymFormat = new SimpleDateFormat("yyMMdd");
 			SimpleDateFormat dhFormat = new SimpleDateFormat("HHmm");
 			//生成文件名
-			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(spiderable.getURL()).toUpperCase() + ".html";
-			String path = HTML_FILE_ROOT + ymFormat.format(date) + "/";
+			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(spiderable.getURL()) + ".html";
+			String path = FILE_ROOT + ymFormat.format(date) + HTML_FILE_ROOT;
 			File file = new File(path);
 			if(!file.exists()) { //判断路径是否存在，不存在则创建
 				file.mkdirs();
 			}
-			relativePath = ymFormat.format(date) + "/" + fileName;
+			relativePath = ymFormat.format(date) + HTML_FILE_ROOT + fileName;
 			absolutePath = path + fileName;
 			//KK.LOG("下载文件到 " + absolutePath);
 			isStarted = true;
@@ -236,16 +228,16 @@ public class HttpDownloadUtilx {
 			SimpleDateFormat ymFormat = new SimpleDateFormat("yyMMdd");
 			SimpleDateFormat dhFormat = new SimpleDateFormat("HHmm");
 			//生成文件名
-			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(destUrl).toUpperCase();
+			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(destUrl);
 			Pattern pattern = Pattern.compile("[.][\\w]+?$");
 			Matcher matcher = pattern.matcher(destUrl);
 			if(matcher.find()) { //匹配后缀名
-				String path = IMG_FILE_ROOT + ymFormat.format(date) + "/";
+				String path = FILE_ROOT + ymFormat.format(date) + IMG_FILE_ROOT;
 				File file = new File(path);
 				if(!file.exists()) { //判断路径是否存在，不存在则创建
 					file.mkdirs();
 				}
-				relativePath = ymFormat.format(date) + "/" + fileName + matcher.group();
+				relativePath = IMG_FILE_ROOT + fileName + matcher.group();
 				absolutePath = path + fileName + matcher.group();
 				//KK.LOG("下载文件到 " + absolutePath);
 				isStarted = true;

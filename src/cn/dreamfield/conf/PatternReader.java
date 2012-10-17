@@ -3,11 +3,8 @@ package cn.dreamfield.conf;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Properties;
 
-import cn.jinren.spider.Element;
-import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.ListSpiderable;
 import cn.jinren.spider.ListSpiderableImpl;
 import cn.jinren.spider.Spiderable;
