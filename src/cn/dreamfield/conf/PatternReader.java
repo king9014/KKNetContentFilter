@@ -3,13 +3,12 @@ package cn.dreamfield.conf;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Properties;
 
-import cn.jinren.spider.Element;
-import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.ListSpiderable;
 import cn.jinren.spider.ListSpiderableImpl;
+import cn.jinren.spider.PaginationSpiderable;
+import cn.jinren.spider.PaginationSpiderableImpl;
 import cn.jinren.spider.Spiderable;
 import cn.jinren.spider.SpiderableImpl;
 
@@ -51,6 +50,15 @@ public class PatternReader {
 		spiderableImpl.setURL(PatternReader.getValue(website + ".content.url"));
 		spiderableImpl.setStart(PatternReader.getValue(website + ".content.start"));
 		spiderableImpl.setEnd(PatternReader.getValue(website + ".content.end"));
+		return spiderableImpl;
+	}
+	
+	public static PaginationSpiderable getPaginationSpiderable(String website) {
+		PaginationSpiderableImpl spiderableImpl = new PaginationSpiderableImpl();
+		spiderableImpl.setPatt(PatternReader.getValue(website + ".pagination.patt"));
+		spiderableImpl.setPageNext(PatternReader.getValue(website + ".pagination.pageNext"));
+		spiderableImpl.setPageTotal(PatternReader.getValue(website + ".pagination.pageTotal"));
+		spiderableImpl.setPageCurrent(PatternReader.getValue(website + ".pagination.pageCurrent"));
 		return spiderableImpl;
 	}
 	

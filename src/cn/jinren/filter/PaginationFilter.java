@@ -1,87 +1,88 @@
 package cn.jinren.filter;
 
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.dreamfield.dao.NetArticleDao;
-import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.spiderable.SpiderableConst;
-import cn.dreamfield.utils.HttpDownloadUtil;
+import cn.dreamfield.conf.KKConf;
+import cn.dreamfield.conf.PatternReader;
+import cn.dreamfield.conf.WebsiteConf;
+import cn.dreamfield.dao.NetInfoPageDao;
+import cn.dreamfield.model.NetInfo;
+import cn.dreamfield.model.NetInfoPage;
+import cn.dreamfield.utils.HttpDownloadUtilx;
 import cn.dreamfield.utils.SpringUtil;
-import cn.jinren.spider.Spiderable;
+import cn.jinren.spider.PaginationSpiderable;
 import cn.jinren.test.KK;
 
 public class PaginationFilter implements StrFilter {
 	
-	private NetArticle netArticle;
+	private NetInfo netInfo;
 	
-	public PaginationFilter(NetArticle netArticle) {
-		this.netArticle = netArticle;
+	public PaginationFilter(NetInfo netInfo) {
+		this.netInfo = netInfo;
 	}
 
 	@Override
 	public String doFilter(String str) {
 		String result = str;
+		PaginationSpiderable ps = PatternReader.getPaginationSpiderable(netInfo.getInfoWebsite());
 		String pagination = "";
-		Pattern p = Pattern.compile("<div align=\"center\" class=\"page_fenye\">.+?</div>");
+		Pattern p = Pattern.compile(ps.getPaginationPatt().replace("[KKSP]", "[\\w[\\W]]+?"));
 		Matcher m = p.matcher(str);
 		if(m.find()) {
 			pagination = m.group();
-			Pattern pa = Pattern.compile("<a id=\"after_this_page\" href=\"(.+?)\">下一页</a>");
+			Pattern pa = Pattern.compile(ps.getPageNext().replace("[KKSP]", "([\\w[\\W]]+?)"));
 			Matcher ma = pa.matcher(pagination);
 			if(ma.find()) {
 				String nextUrl = ma.group(1);
 				KK.DEBUG("[START NEXT]: " + nextUrl);
-				NetArticle originArticle = SpringUtil.ctx.getBean(NetArticleDao.class).getNetArticleEntity(nextUrl);
-				if(null == originArticle) {
-					NetArticle cArticle = new NetArticle();
-					cArticle.setPid(netArticle.getId());	//重要 递归的重要环节
-					cArticle.setWebsite(SpiderableConst.WEBSITE_NAME);	
-					cArticle.setOriginUrl(nextUrl); 		//item0 --- url
-					cArticle.setIsExist("N"); 				//文章还没有本地化，暂时设为N
-					cArticle.setOptDate(new Date());
-					SpringUtil.ctx.getBean(NetArticleDao.class).saveNetArticle(cArticle);
-					Spiderable contentSpiderable = null;
-					//更加xml配置文件获得对应的ContentSpiderable
-					try {
-						contentSpiderable = (Spiderable)Class.forName(SpiderableConst.CONTENT_SPIDERABLE_NAME).newInstance();
-						contentSpiderable.setURL(nextUrl);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
-					//游侠网的新闻内容 ---GameNewsContentSpiderable
-					httpDownloadUtils.DownloadHtmlFromURL(contentSpiderable);
-				} else if("N".equals(originArticle.getIsExist())) {
-					Spiderable contentSpiderable = null;
-					//更加xml配置文件获得对应的ContentSpiderable
-					try {
-						contentSpiderable = (Spiderable)Class.forName(SpiderableConst.CONTENT_SPIDERABLE_NAME).newInstance();
-						contentSpiderable.setURL(nextUrl);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					HttpDownloadUtil h = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
-					//游侠网的新闻内容 ---GameNewsContentSpiderable
-					h.DownloadHtmlFromURL(contentSpiderable);
+				NetInfoPage cInfoPage = SpringUtil.ctx.getBean(NetInfoPageDao.class).getNetInfoPageEntity(nextUrl);
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
+				if(null == cInfoPage) {
+					cInfoPage = new NetInfoPage();
+					cInfoPage.setPageOriginUrl(nextUrl);
+					cInfoPage.setPageStatus("N");
+					cInfoPage.setParentId(netInfo.getInfoId());
+					
+					pa = Pattern.compile(ps.getPageCurrent());
+					ma = pa.matcher(pagination);
+					if(ma.find()) {
+						cInfoPage.setPageCurrent(Integer.parseInt(ma.group(1)) + 1);
+						KK.DEBUG("当前页", Integer.parseInt(ma.group(1)) + 1);
+					}
+					pa = Pattern.compile(ps.getPageTotal());
+					ma = pa.matcher(pagination);
+					if(ma.find()) {
+						cInfoPage.setPageTotal(Integer.parseInt(ma.group(1)));
+						KK.DEBUG("总页数", ma.group(1));
+					}
+					SpringUtil.ctx.getBean(NetInfoPageDao.class).saveNetInfoPage(cInfoPage);
+					
+					String decode = "";
+					for(WebsiteConf w : KKConf.websiteConfs) {
+						if(w.getWebsiteName().equals(netInfo.getInfoWebsite())) {
+							decode = w.getDecode();
+						}
+					}
+					HttpDownloadUtilx httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtilx.class);
+					httpDownloadUtils.DownloadChildPageFromURL(netInfo, cInfoPage, decode);
+				} else if("N".equals(cInfoPage.getPageStatus())) {
+					String decode = "";
+					for(WebsiteConf w : KKConf.websiteConfs) {
+						if(w.getWebsiteName().equals(netInfo.getInfoWebsite())) {
+							decode = w.getDecode();
+						}
+					}
+					HttpDownloadUtilx httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtilx.class);
+					httpDownloadUtils.DownloadChildPageFromURL(netInfo, cInfoPage, decode);
+				}
+				
+				
 			}
-			pa = Pattern.compile("class=\"currpage\"[\\D]+?([\\d]+?)[\\D]+?");
-			ma = pa.matcher(pagination);
-			if(ma.find()) {
-				netArticle.setPageCorrent(Long.parseLong(ma.group(1)));
-				KK.DEBUG("当前页", ma.group(1));
-			}
-			pa = Pattern.compile("共([\\d]+?)页");
-			ma = pa.matcher(pagination);
-			if(ma.find()) {
-				netArticle.setPageTotal(Long.parseLong(ma.group(1)));
-				KK.DEBUG("总页数", ma.group(1));
-			}
-		} else {
-			netArticle.setPageCorrent(1l);
-			netArticle.setPageTotal(1l);
 		}
 		result = result.replace(pagination, "");
 		return result;

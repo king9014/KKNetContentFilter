@@ -11,6 +11,7 @@ public class NetInfo {
 	private String infoOriginUrl;
 	private String infoImgUrl;
 	private Date infoDate;
+	private Date infoDateOpt;
 	private String infoIntro;
 	private Long infoCid;
 	private String infoStatus;
@@ -79,6 +80,12 @@ public class NetInfo {
 	}
 	public void setInfoIntro(String infoIntro) {
 		this.infoIntro = infoIntro;
+	}
+	public Date getInfoDateOpt() {
+		return infoDateOpt;
+	}
+	public void setInfoDateOpt(Date infoDateOpt) {
+		this.infoDateOpt = infoDateOpt;
 	}
 	
 }

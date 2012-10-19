@@ -18,39 +18,64 @@ USE `netspider`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `net_article`
+-- Table structure for table `net_info`
 --
 
-DROP TABLE IF EXISTS `net_article`;
+DROP TABLE IF EXISTS `net_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `net_article` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(105) DEFAULT NULL,
-  `PAGE_TOTAL` int(11) DEFAULT NULL,
-  `PAGE_CORRENT` int(11) DEFAULT NULL,
-  `DATE` datetime DEFAULT NULL,
-  `OPT_DATE` datetime DEFAULT NULL,
-  `HTML_URL` varchar(255) DEFAULT NULL,
-  `IMG_URL` varchar(255) DEFAULT NULL,
-  `IMG_URL_S` varchar(255) DEFAULT NULL,
-  `IS_EXIST` varchar(1) DEFAULT 'N',
-  `ORIGIN_URL` varchar(255) DEFAULT NULL,
-  `CATEGORY` varchar(45) DEFAULT NULL,
-  `PID` int(11) DEFAULT NULL,
-  `INTRO` varchar(255) DEFAULT NULL,
-  `WEBSITE` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3188 DEFAULT CHARSET=utf8;
+CREATE TABLE `net_info` (
+  `INFO_ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `INFO_NAME` varchar(75) DEFAULT NULL,
+  `INFO_WEBSITE` varchar(45) NOT NULL,
+  `INFO_CATEGORY` varchar(45) DEFAULT NULL,
+  `INFO_HTML_URL` varchar(105) DEFAULT NULL,
+  `INFO_ORIGIN_URL` varchar(255) NOT NULL,
+  `INFO_IMG_URL` varchar(255) DEFAULT NULL,
+  `INFO_DATE` datetime DEFAULT NULL,
+  `INFO_DATE_OPT` datetime NOT NULL,
+  `INFO_INTRO` varchar(255) DEFAULT NULL,
+  `INFO_CID` bigint(20) DEFAULT NULL,
+  `INFO_STATUS` varchar(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`INFO_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `net_article`
+-- Dumping data for table `net_info`
 --
 
-LOCK TABLES `net_article` WRITE;
-/*!40000 ALTER TABLE `net_article` DISABLE KEYS */;
-/*!40000 ALTER TABLE `net_article` ENABLE KEYS */;
+LOCK TABLES `net_info` WRITE;
+/*!40000 ALTER TABLE `net_info` DISABLE KEYS */;
+/*!40000 ALTER TABLE `net_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `net_info_page`
+--
+
+DROP TABLE IF EXISTS `net_info_page`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `net_info_page` (
+  `INFO_PAGE_ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `PAGE_TOTAL` int(11) DEFAULT NULL,
+  `PAGE_CURRENT` int(11) DEFAULT NULL,
+  `PAGE_HTML_URL` varchar(105) DEFAULT NULL,
+  `PAGE_ORIGIN_URL` varchar(255) NOT NULL,
+  `PARENT_ID` bigint(20) DEFAULT NULL,
+  `PAGE_STATUS` varchar(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`INFO_PAGE_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `net_info_page`
+--
+
+LOCK TABLES `net_info_page` WRITE;
+/*!40000 ALTER TABLE `net_info_page` DISABLE KEYS */;
+/*!40000 ALTER TABLE `net_info_page` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -62,4 +87,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-09-21 10:18:56
+-- Dump completed on 2012-10-19 13:32:32

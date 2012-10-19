@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="cn.dreamfield.model.NetInfoPage" table="net_info_page">
+		<id name="InfoPageId" column="INFO_PAGE_ID">
+			<generator class="native"/>
+		</id>
+		<property name="pageTotal" column="PAGE_TOTAL"/>
+		<property name="pageCurrent" column="PAGE_CURRENT"/>
+		<property name="pageHtmlUrl" column="PAGE_HTML_URL"/>
+		<property name="pageOriginUrl" column="PAGE_ORIGIN_URL"/>
+		<property name="parentId" column="PARENT_ID"/>
+		<property name="pageStatus" column="PAGE_STATUS"/>
+		
+	</class>
+</hibernate-mapping>

@@ -14,6 +14,7 @@
 		<property name="infoOriginUrl" column="INFO_ORIGIN_URL"/>
 		<property name="infoImgUrl" column="INFO_IMG_URL"/>
 		<property name="infoDate" column="INFO_DATE"/>
+		<property name="infoDateOpt" column="INFO_DATE_OPT"/>
 		<property name="infoIntro" column="INFO_INTRO"/>
 		<property name="infoCid" column="INFO_CID"/>
 		<property name="infoStatus" column="INFO_STATUS"/>

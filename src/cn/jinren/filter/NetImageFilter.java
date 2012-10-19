@@ -3,10 +3,10 @@ package cn.jinren.filter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.dreamfield.model.NetArticle;
-import cn.dreamfield.utils.HttpDownloadUtil;
+import cn.dreamfield.conf.KKConf;
+import cn.dreamfield.model.NetInfo;
+import cn.dreamfield.utils.HttpDownloadUtilx;
 import cn.dreamfield.utils.SpringUtil;
-import cn.dreamfield.utils.UtilConst;
 import cn.jinren.test.KK;
 
 /**
@@ -16,17 +16,13 @@ import cn.jinren.test.KK;
  */
 public class NetImageFilter implements StrFilter {
 	
-	private NetArticle netArticle;
+	private NetInfo netInfo;
 	private Boolean isFirstImg = true;
 	
-	public NetImageFilter(NetArticle netArticle) {
-		this.netArticle = netArticle;
+	public NetImageFilter(NetInfo netInfo) {
+		this.netInfo = netInfo;
 	}
 	
-	public NetImageFilter() {
-		isFirstImg = false;
-	}
-
 	@Override
 	public String doFilter(String str) {
 		String result = str;
@@ -35,16 +31,16 @@ public class NetImageFilter implements StrFilter {
 		while(matcher.find()) {
 			String imageUrl = matcher.group(1);
 			if(imageUrl.startsWith("/") | imageUrl.startsWith("../") | imageUrl.startsWith("../../")) {
-				KK.LOG(imageUrl);
+				KK.LOG("IMG URL ERROR " + imageUrl);
 			}
-			if(UtilConst.IS_IMAGE_DOWNLOAD) {
-				HttpDownloadUtil httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtil.class);
+			if(KKConf.IS_IMAGE_DOWNLOAD.containsKey(netInfo.getInfoWebsite()) && KKConf.IS_IMAGE_DOWNLOAD.get(netInfo.getInfoWebsite())) {
+				HttpDownloadUtilx httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtilx.class);
 				String relativePath = httpDownloadUtils.DownloadImageFromURL(imageUrl);
-				if(isFirstImg) {
+				if(isFirstImg && (null == netInfo.getInfoImgUrl() || "".equals(netInfo.getInfoImgUrl()))) {
 					isFirstImg = false;
-					netArticle.setImgUrl(relativePath);
+					netInfo.setInfoImgUrl("image/" + relativePath);
 				}
-				if(UtilConst.CHANGE_IMAGE_URL) {
+				if(KKConf.CHANGE_IMAGE_URL.containsKey(netInfo.getInfoWebsite()) && KKConf.CHANGE_IMAGE_URL.get(netInfo.getInfoWebsite())) {
 					result = result.replaceAll(imageUrl, "../../image/" + relativePath);
 				}
 			}

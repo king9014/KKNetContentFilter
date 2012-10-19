@@ -39,14 +39,14 @@ public class TestConf {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		SpringUtil.ctx.getBean(TestConf.class).generateWebsiteListByName("u148");
+		SpringUtil.ctx.getBean(TestConf.class).generateWebsiteListByName("youxia");
 		ArrayList<NetInfo> netInfos = SpringUtil.ctx.getBean(TestConf.class).articleListUtilx.getNetInfos();
-		TempOptUtil.trimTitleAndIntro(netInfos);
-		for(NetInfo n : SpringUtil.ctx.getBean(TestConf.class).articleListUtilx.getNetInfos()) {
-			KK.INFO(n.getInfoName());
-			KK.INFO(n.getInfoIntro());
-			KK.DEBUG("====================================");
-		}
+		TempOptUtil.tempOptProcessForNetInfos(netInfos);
+//		for(NetInfo n : SpringUtil.ctx.getBean(TestConf.class).articleListUtilx.getNetInfos()) {
+//			KK.INFO(n.getInfoName());
+//			KK.INFO(n.getInfoIntro());
+//			KK.DEBUG("====================================");
+//		}
 		SpringUtil.ctx.getBean(TestConf.class).articleListUtilx.runContentSpider();
 	}
 

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import cn.dreamfield.utils.UtilConst;
+import cn.dreamfield.conf.KKConf;
 
 /**
  * SIMPLE LOG FOR TEST
@@ -15,7 +15,7 @@ import cn.dreamfield.utils.UtilConst;
  */
 public class KK {
 	
-	private static String LOG_FILE_ROOT = UtilConst.FILE_ROOT + "log/";
+	private static String LOG_FILE_ROOT = KKConf.FILE_ROOT + "log/";
 	
 	public static void LOG(Object o) {
 		Date date = new Date();

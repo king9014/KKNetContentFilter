@@ -16,20 +16,15 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import cn.dreamfield.dao.NetArticleDao;
+import cn.dreamfield.conf.KKConf;
+import cn.dreamfield.conf.PatternReader;
 import cn.dreamfield.dao.NetInfoDao;
-import cn.dreamfield.model.NetArticle;
+import cn.dreamfield.dao.NetInfoPageDao;
 import cn.dreamfield.model.NetInfo;
+import cn.dreamfield.model.NetInfoPage;
 import cn.dreamfield.tempopt.TempOptUtil;
 import cn.jinren.filter.ATagFilter;
-import cn.jinren.filter.IntroFilter;
-import cn.jinren.filter.NetImageFilter;
-import cn.jinren.filter.PaginationFilter;
-import cn.jinren.filter.PubDateFilter;
-import cn.jinren.filter.ScriptFilter;
-import cn.jinren.filter.SpecialStrFilter;
 import cn.jinren.filter.StrFilterChain;
-import cn.jinren.filter.TitleFilter;
 import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.Spiderable;
 import cn.jinren.test.KK;
@@ -46,7 +41,7 @@ public class HttpDownloadUtilx {
 	private static int IMG_MAX_RELOAD_NUM = 3;
 	private static int HTML_DOWN_THREAD_NUM = 2;
 	private static int HTML_MAX_RELOAD_NUM = 2;
-	private static String FILE_ROOT = UtilConst.FILE_ROOT;
+	private static String FILE_ROOT = KKConf.FILE_ROOT;
 	private static String IMG_FILE_ROOT = FILE_ROOT + "image/";
 	private static String HTML_FILE_ROOT = FILE_ROOT + "html/";
 	
@@ -55,6 +50,8 @@ public class HttpDownloadUtilx {
 	
 	@Autowired
 	private NetInfoDao netInfoDao;
+	@Autowired
+	private NetInfoPageDao netInfoPageDao;
 	
 	public HttpDownloadUtilx(){}
 	
@@ -66,14 +63,21 @@ public class HttpDownloadUtilx {
 		return relativePath;
 	}
 	
-	public void DownloadHtmlFromURL(Spiderable spiderable, String decode) {
-		//防止同一篇文章的重复下载
-		NetInfo originInfo = netInfoDao.getNetInfoEntity(spiderable.getURL());
-		if(null == originInfo) {
-			KK.WARN("DownloadHtmlFromURL(Spiderable)-->此方法不能在数据库中创建新文章");
-			return;
-		} else if("N".equals(originInfo.getInfoStatus())) {
-			HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, decode, originInfo, 0);
+	public void DownloadHtmlFromURL(NetInfo netInfo, String decode) {
+		Spiderable spiderable = PatternReader.getContentSpiderable(netInfo.getInfoWebsite());
+		spiderable.setURL(netInfo.getInfoOriginUrl());
+		if("N".equals(netInfo.getInfoStatus())) {
+			HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, decode, netInfo, 0);
+			KK.DEBUG(spiderable.getURL());
+			htmlDownloadThreadPool.execute(downloadThread);
+		}
+	}
+	
+	public void DownloadChildPageFromURL(NetInfo netInfo, NetInfoPage cInfoPage, String decode) {
+		Spiderable spiderable = PatternReader.getContentSpiderable(netInfo.getInfoWebsite());
+		spiderable.setURL(cInfoPage.getPageOriginUrl()); //给定子文章页面地址
+		if("N".equals(cInfoPage.getPageStatus())) {
+			HtmlDownloadThread downloadThread = new HtmlDownloadThread(spiderable, decode, netInfo, cInfoPage, 0);
 			KK.DEBUG(spiderable.getURL());
 			htmlDownloadThreadPool.execute(downloadThread);
 		}
@@ -84,14 +88,25 @@ public class HttpDownloadUtilx {
 		private String absolutePath;
 		private String relativePath;
 		private Boolean isStarted = false;
+		private Boolean isChildPage = false;
 		private int reLoadNum;
 		private NetInfo netInfo;
+		private NetInfoPage cInfoPage;
 		private String decode;
 		public HtmlDownloadThread(Spiderable spiderable, String decode, NetInfo netInfo, int reLoadNum) {
 			this.spiderable = spiderable;
 			this.reLoadNum = reLoadNum;
 			this.netInfo = netInfo;
 			this.decode = decode;
+			loadDownloadInfo();
+		}
+		public HtmlDownloadThread(Spiderable spiderable, String decode, NetInfo netInfo, NetInfoPage cInfoPage, int reLoadNum) {
+			this.spiderable = spiderable;
+			this.reLoadNum = reLoadNum;
+			this.netInfo = netInfo;
+			this.cInfoPage = cInfoPage;
+			this.decode = decode;
+			isChildPage = true;
 			loadDownloadInfo();
 		}
 		@Override
@@ -138,7 +153,7 @@ public class HttpDownloadUtilx {
 			SimpleDateFormat ymFormat = new SimpleDateFormat("yyMMdd");
 			SimpleDateFormat dhFormat = new SimpleDateFormat("HHmm");
 			//生成文件名
-			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(spiderable.getURL()).toUpperCase() + ".html";
+			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(spiderable.getURL()) + ".html";
 			String path = HTML_FILE_ROOT + ymFormat.format(date) + "/";
 			File file = new File(path);
 			if(!file.exists()) { //判断路径是否存在，不存在则创建
@@ -155,15 +170,15 @@ public class HttpDownloadUtilx {
 		 * @param str
 		 * @throws IOException
 		 */
-		private synchronized void articlePersistent(String str) throws IOException {
+		private synchronized void infoPersistent(String str) throws IOException {
 			//拿到对应未本地化的数据模型
 			if(null == netInfo) {
 				throw new IOException("NetInfo--NULL");
 			} else if("N".equals(netInfo.getInfoStatus())) {
 				StrFilterChain chain = new StrFilterChain();
-				TempOptUtil.addTempChainBeforeATag(chain);
+				TempOptUtil.addTempChainBeforeATag(chain, netInfo);
 				chain.addStrFilter(new ATagFilter());
-				TempOptUtil.addTempChainAfterATag(chain);
+				TempOptUtil.addTempChainAfterATag(chain, netInfo);
 				String result = chain.doFilter(str);
 				FileOutputStream fos = new FileOutputStream(absolutePath);//建立文件
 				fos.write(result.getBytes());
@@ -175,9 +190,38 @@ public class HttpDownloadUtilx {
 			}
 		}
 		
+		private synchronized void childInfoPersistent(String str) throws IOException {
+			//拿到对应未本地化的数据模型
+			if(null == cInfoPage) {
+				throw new IOException("ChildNetInfo--NULL");
+			} else if("N".equals(cInfoPage.getPageStatus())) {
+				StrFilterChain chain = new StrFilterChain();
+				TempOptUtil.addTempChainBeforeATag(chain, netInfo);
+				chain.addStrFilter(new ATagFilter());
+				TempOptUtil.addTempChainAfterATag(chain, netInfo);
+				String result = chain.doFilter(str);
+				FileOutputStream fos = new FileOutputStream(absolutePath);//建立文件
+				fos.write(result.getBytes());
+				fos.close();
+				//在这可能要做一些持久化的配置
+				if(2 == cInfoPage.getPageCurrent()) {
+					netInfo.setInfoStatus("P");
+					netInfo.setInfoCid(cInfoPage.getInfoPageId());
+					netInfoDao.updateNetInfo(netInfo);
+				}
+				cInfoPage.setPageHtmlUrl(relativePath);
+				cInfoPage.setPageStatus("E");
+				netInfoPageDao.updateNetInfoPage(cInfoPage);
+			}
+		}
+		
 		private void downloadFile() throws IOException {
 			String str = KKContentSpider.getContentString(spiderable, decode);
-			articlePersistent(str);
+			if(isChildPage) {
+				childInfoPersistent(str);
+			} else {
+				infoPersistent(str);
+			}
 		}
 	}
 	
@@ -236,7 +280,7 @@ public class HttpDownloadUtilx {
 			SimpleDateFormat ymFormat = new SimpleDateFormat("yyMMdd");
 			SimpleDateFormat dhFormat = new SimpleDateFormat("HHmm");
 			//生成文件名
-			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(destUrl).toUpperCase();
+			String fileName = dhFormat.format(date) + "_" + MD5Util.MD5Encode(destUrl);
 			Pattern pattern = Pattern.compile("[.][\\w]+?$");
 			Matcher matcher = pattern.matcher(destUrl);
 			if(matcher.find()) { //匹配后缀名

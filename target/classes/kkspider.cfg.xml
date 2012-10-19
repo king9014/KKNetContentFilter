@@ -2,19 +2,17 @@
 <kkspider-configuration>
 <configs>
 	<property name="file_root">c:/kdownload/</property>
-	<property name="is_image_download">true</property>
-	<property name="change_image_url">true</property>
 </configs>
 <websites>
 	<website name="youxia" decode="gbk">
-		<listspiderable name="cn.dreamfield.spiderable.AliNewsListSpiderable"/>
-		<contentspiderable name="cn.dreamfield.spiderable.AliNewsContentSpiderable"/>
+		<property name="is_image_download">true</property>
+		<property name="change_image_url">false</property>
 		<listurls>
 			<listurl url="http://www.ali213.net/News/listhtml/List_1_1.html" category="pcnews"/>
-			<listurl url="http://www.ali213.net/News/listhtml/List_7_1.html" category="tvnews"/>
+			<!-- <listurl url="http://www.ali213.net/News/listhtml/List_7_1.html" category="tvnews"/>
 			<listurl url="http://www.ali213.net/News/listhtml/List_8_1.html" category="phonenews"/>
 			<listurl url="http://www.ali213.net/News/listhtml/List_3_1.html" category="gametest"/>
-			<listurl url="http://www.ali213.net/News/listhtml/List_9_1.html" category="gamefuture"/>
+			<listurl url="http://www.ali213.net/News/listhtml/List_9_1.html" category="gamefuture"/> -->
 		</listurls>
 	</website>
 	<website name="itouxian" decode="utf-8">
@@ -23,17 +21,11 @@
 		</listurls>
 	</website>
 	<website name="u148" decode="utf-8">
+		<property name="is_image_download">true</property>
+		<property name="change_image_url">true</property>
 		<listurls>
-			<!-- <listurl url="http://www.u148.net/text.html" category="text"/>
+			<listurl url="http://www.u148.net/text.html" category="text"/>
 			<listurl url="http://www.u148.net/text/2.html" category="text"/>
-			<listurl url="http://www.u148.net/text/3.html" category="text"/>
-			<listurl url="http://www.u148.net/text/4.html" category="text"/> -->
-			<listurl url="http://www.u148.net/text/5.html" category="text"/>
-			<listurl url="http://www.u148.net/text/6.html" category="text"/>
-			<listurl url="http://www.u148.net/text/7.html" category="text"/>
-			<listurl url="http://www.u148.net/text/8.html" category="text"/>
-			<listurl url="http://www.u148.net/text/9.html" category="text"/>
-			<listurl url="http://www.u148.net/text/10.html" category="text"/>
 		</listurls>
 	</website>
 </websites>

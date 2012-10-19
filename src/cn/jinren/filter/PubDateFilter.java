@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.dreamfield.model.NetArticle;
+import cn.dreamfield.model.NetInfo;
 import cn.jinren.test.KK;
 
 /**
@@ -18,10 +18,10 @@ import cn.jinren.test.KK;
  */
 public class PubDateFilter implements StrFilter {
 	
-	private NetArticle netArticle;
+	private NetInfo NetInfo;
 	
-	public PubDateFilter(NetArticle netArticle) {
-		this.netArticle = netArticle;
+	public PubDateFilter(NetInfo NetInfo) {
+		this.NetInfo = NetInfo;
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class PubDateFilter implements StrFilter {
 				SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 				try {
 					Date date = format.parse(ma.group(1));
-					netArticle.setDate(date);
+					NetInfo.setInfoDate(date);
 				} catch (ParseException e) {
 					KK.ERROR(e);
 				}

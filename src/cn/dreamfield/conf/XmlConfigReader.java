@@ -56,18 +56,6 @@ public class XmlConfigReader {
 			if("file_root".equals(property.attributeValue("name"))) {
 				KKConf.FILE_ROOT = (String) property.getData();
 				KK.INFO(property.getData());
-			} else if("is_image_download".equals(property.attributeValue("name"))) {
-				if("false".equals(property.getData()))
-					KKConf.IS_IMAGE_DOWNLOAD = false;
-				else 
-					KKConf.IS_IMAGE_DOWNLOAD = true;
-				KK.INFO(property.getData());
-			} else if("change_image_url".equals(property.attributeValue("name"))) {
-				if("false".equals(property.getData()))
-					KKConf.CHANGE_IMAGE_URL = false;
-				else 
-					KKConf.CHANGE_IMAGE_URL = true;
-				KK.INFO(property.getData());
 			}
 	    }
 	}
@@ -85,7 +73,23 @@ public class XmlConfigReader {
 			}
 			for (Iterator<?> iee = website.elementIterator(); iee.hasNext();) {
 				Element item = (Element) iee.next();
-				if("listurls".equals(item.getName())) {
+				if("property".equals(item.getName())) {
+					if("is_image_download".equals(item.attributeValue("name"))) {
+						KK.INFO(websiteConf.getWebsiteName() + " [IMAGE DOWN]: " + item.getData());
+						if("false".equals(item.getData())) {
+							KKConf.IS_IMAGE_DOWNLOAD.put(websiteConf.getWebsiteName(), false);
+						} else {
+							KKConf.IS_IMAGE_DOWNLOAD.put(websiteConf.getWebsiteName(), true);
+						}
+					} else if("change_image_url".equals(item.attributeValue("name"))) {
+						KK.INFO(websiteConf.getWebsiteName() + " [CHANGE IMG URL]: " + item.getData());
+						if("false".equals(item.getData())) {
+							KKConf.CHANGE_IMAGE_URL.put(websiteConf.getWebsiteName(), false);
+						} else {
+							KKConf.CHANGE_IMAGE_URL.put(websiteConf.getWebsiteName(), true);
+						}
+					}
+				} else if("listurls".equals(item.getName())) {
 					for (Iterator<?> ieee = item.elementIterator(); ieee.hasNext();) {
 						Element url = (Element) ieee.next();
 						websiteConf.addUc(new UrlAndCategory(url.attributeValue("url"), url.attributeValue("category")));

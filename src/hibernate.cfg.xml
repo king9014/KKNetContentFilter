@@ -13,7 +13,7 @@
 		<property name="hibernate.show_sql">true</property>
  		<property name="format_sql">false</property>
  		
-		<mapping resource="cn/dreamfield/model/netArticle.hbm.xml"/>
 		<mapping resource="cn/dreamfield/model/netInfo.hbm.xml"/>
+		<mapping resource="cn/dreamfield/model/netInfoPage.hbm.xml"/>
 	</session-factory>
 </hibernate-configuration>

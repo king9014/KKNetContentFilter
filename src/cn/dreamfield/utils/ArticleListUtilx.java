@@ -9,16 +9,10 @@ import org.springframework.stereotype.Component;
 
 import cn.dreamfield.conf.PatternReader;
 import cn.dreamfield.conf.WebsiteConf;
-import cn.dreamfield.dao.NetArticleDao;
 import cn.dreamfield.dao.NetInfoDao;
-import cn.dreamfield.model.NetArticle;
 import cn.dreamfield.model.NetInfo;
-import cn.dreamfield.spiderable.SpiderableConst;
-import cn.jinren.filter.TitleFilter;
-import cn.jinren.spider.Element;
 import cn.jinren.spider.KKContentSpider;
 import cn.jinren.spider.ListSpiderable;
-import cn.jinren.spider.Spiderable;
 import cn.jinren.test.KK;
 
 @Component
@@ -67,6 +61,11 @@ public class ArticleListUtilx {
 		try {
 			KKContentSpider.getElementsFromWebx(listSpiderable, netInfos, websiteConf.getDecode());
 		} catch (IOException e) {
+			try {
+				Thread.sleep(1200);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
 			KK.INFO("[LIST DOWN FAIL " + reLoadNum + "]: " + listSpiderable.getURL());
 			if(reLoadNum > 1) {
 				KK.LOG("[LIST DOWN FAIL]: " + listSpiderable.getURL());
@@ -85,24 +84,21 @@ public class ArticleListUtilx {
 			NetInfo originInfo = netInfoDao.getNetInfoEntity(netInfo.getInfoOriginUrl());
 			if(null == originInfo) {
 				netInfo.setInfoStatus("N");
+				netInfo.setInfoDateOpt(new Date());
 				netInfoDao.saveNetInfo(netInfo);
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				Spiderable spiderable = PatternReader.getContentSpiderable(websiteConf.getWebsiteName());
-				spiderable.setURL(netInfo.getInfoOriginUrl());
-				SpringUtil.ctx.getBean(HttpDownloadUtilx.class).DownloadHtmlFromURL(spiderable, websiteConf.getDecode());
+				SpringUtil.ctx.getBean(HttpDownloadUtilx.class).DownloadHtmlFromURL(netInfo, websiteConf.getDecode());
 			} else if("N".equals(originInfo.getInfoStatus())) {
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				Spiderable spiderable = PatternReader.getContentSpiderable(websiteConf.getWebsiteName());
-				spiderable.setURL(netInfo.getInfoOriginUrl());
-				SpringUtil.ctx.getBean(HttpDownloadUtilx.class).DownloadHtmlFromURL(spiderable, websiteConf.getDecode());
+				SpringUtil.ctx.getBean(HttpDownloadUtilx.class).DownloadHtmlFromURL(netInfo, websiteConf.getDecode());
 			}
 		}
 	}
