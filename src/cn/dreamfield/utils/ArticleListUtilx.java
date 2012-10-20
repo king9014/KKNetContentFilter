@@ -3,6 +3,7 @@ package cn.dreamfield.utils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -101,6 +102,10 @@ public class ArticleListUtilx {
 				SpringUtil.ctx.getBean(HttpDownloadUtilx.class).DownloadHtmlFromURL(netInfo, websiteConf.getDecode());
 			}
 		}
+	}
+
+	public void setNetInfos(List<NetInfo> netInfos) {
+		this.netInfos = (ArrayList<NetInfo>) netInfos;
 	}
 	
 }

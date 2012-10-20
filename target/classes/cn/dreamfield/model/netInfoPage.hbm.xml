@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 	<class name="cn.dreamfield.model.NetInfoPage" table="net_info_page">
-		<id name="InfoPageId" column="INFO_PAGE_ID">
+		<id name="infoPageId" column="INFO_PAGE_ID">
 			<generator class="native"/>
 		</id>
 		<property name="pageTotal" column="PAGE_TOTAL"/>

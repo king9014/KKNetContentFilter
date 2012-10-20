@@ -1,7 +1,7 @@
 package cn.dreamfield.model;
 
 public class NetInfoPage {
-	private Long InfoPageId;
+	private Long infoPageId;
 	private int pageTotal;
 	private int pageCurrent;
 	private String pageHtmlUrl;
@@ -9,10 +9,10 @@ public class NetInfoPage {
 	private Long parentId;
 	private String pageStatus;
 	public Long getInfoPageId() {
-		return InfoPageId;
+		return infoPageId;
 	}
 	public void setInfoPageId(Long infoPageId) {
-		InfoPageId = infoPageId;
+		this.infoPageId = infoPageId;
 	}
 	public int getPageTotal() {
 		return pageTotal;

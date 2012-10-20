@@ -1,27 +1,57 @@
 package cn.dreamfield.in;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import cn.dreamfield.conf.KKConf;
 import cn.dreamfield.conf.WebsiteConf;
 import cn.dreamfield.conf.XmlConfigReader;
+import cn.dreamfield.dao.NetInfoDao;
 import cn.dreamfield.dao.NetInfoPageDao;
+import cn.dreamfield.model.NetInfo;
 import cn.dreamfield.model.NetInfoPage;
+import cn.dreamfield.tempopt.TempOptUtil;
 import cn.dreamfield.utils.ArticleListUtilx;
-import cn.dreamfield.utils.GenerateListFileUtil;
+import cn.dreamfield.utils.HttpDownloadUtilx;
+import cn.dreamfield.utils.ImageCutUtil;
 import cn.dreamfield.utils.SpringUtil;
-import cn.dreamfield.utils.UrlAndCategory;
-import cn.jinren.filter.NetImageFilter;
-import cn.jinren.spider.Spiderable;
-import cn.jinren.test.KK;
 
+@Component
 public class SystemIN {
 	
-	private ArticleListUtilx articleListUtilx = new ArticleListUtilx();
+	private String[] websiteNames = {"u148"};
+	
+	public static void main(String[] args) throws IOException {
+		SystemIN in = SpringUtil.ctx.getBean(SystemIN.class);
+		
+		in.generateWebsiteList();
+//		in.reLoadNetInfosN();
+//		in.generateFirstICO("youxia");
+	}
+	
+	@Autowired
+	private ArticleListUtilx articleListUtilx;
+	@Autowired
+	private NetInfoDao netInfoDao;
+	@Autowired
+	private NetInfoPageDao netInfoPageDao;
+	
+	private void generateWebsiteList() {
+		for(String wn : websiteNames) {
+			generateWebsiteListByName(wn);
+			ArrayList<NetInfo> netInfos = articleListUtilx.getNetInfos();
+			TempOptUtil.tempOptProcessForNetInfos(netInfos);
+		}
+		articleListUtilx.runContentSpider();
+	}
 	
 	public void generateWebsiteListByName(String websiteName) {
 		XmlConfigReader xReader = new XmlConfigReader();
@@ -33,74 +63,49 @@ public class SystemIN {
 			}
 		}
 	}
-
-	public static void main(String[] args) throws IOException {
-		SystemIN in = new SystemIN();
-		in.generateWebsiteListByName("youxia");
-//		loadAllByXMLConfig();
-//		reLoadNByXMLConfig();
-//		generateListByXMLConfig();
+	
+	@SuppressWarnings("static-access")
+	public void generateFirstICO(String websiteName) {
+		String date1 = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		Date d2 = new Date();
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(d2);
+		calendar.add(calendar.DATE,1);
+		d2 = calendar.getTime();
+		String date2 = new SimpleDateFormat("yyyy-MM-dd").format(d2);
+		List<NetInfo> infos = netInfoDao.getNetInfosByDateAndWebName(date1, date2, websiteName);
+		for(NetInfo ni : infos) {
+			if(null != ni.getInfoImgUrl() && ni.getInfoImgUrl().startsWith("image")) {
+				//…˙≥…Õº∆¨Àı¬‘Õº
+				String sImgUrl = ImageCutUtil.ImageCut(KKConf.FILE_ROOT + ni.getInfoImgUrl(), KKConf.IMG_SMALL_WIDTH, KKConf.IMG_SMALL_HIGTH);
+				ni.setInfoImgUrl("ico/" + sImgUrl);
+				netInfoDao.updateNetInfo(ni);
+			}
+		}
 	}
-	
-//	public static void reLoadN() {
-//		List<NetArticle> list = SpringUtil.ctx.getBean(NetArticleDao.class).getNetArticleN();
-//		for(NetArticle n : list) {
-//			KK.INFO("[HTML RELOAD]: " + n.getOriginUrl()); 
-//			SpringUtil.ctx.getBean(HttpDownloadUtil.class).DownloadHtmlFromURL(new AliNewsContentSpiderable(n.getOriginUrl()));
-//		}
-//	}
-//	
-//	public static void reLoadNByXMLConfig() {
-//		XmlConfigReaderUtil xmlUtil = new XmlConfigReaderUtil();
-//		xmlUtil.readConfigXMLAndstartListSpider(false);
-//		List<NetArticle> list = SpringUtil.ctx.getBean(NetArticleDao.class).getNetArticleN();
-//		for(NetArticle n : list) {
-//			KK.INFO("[HTML RELOAD]: [" + n.getWebsite() + "]: " + n.getOriginUrl()); 
-//			try {
-//				Spiderable sp = (Spiderable) Class.forName(xmlUtil.getWebsiteMap().get(n.getWebsite())).newInstance();
-//				sp.setURL(n.getOriginUrl());
-//				SpringUtil.ctx.getBean(HttpDownloadUtil.class).DownloadHtmlFromURL(sp);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-//	
-//	public static void loadAllByXMLConfig() {
-//		XmlConfigReaderUtil xmlUtil = new XmlConfigReaderUtil();
-//		xmlUtil.readConfigXMLAndstartListSpider(true);
-//	}
-//	
-//	public static void generateList() {
-//		SpringUtil.ctx.getBean(GenerateListFileUtil.class).generateList("pcnews");
-//	}
-//	
-//	public static void generateListByXMLConfig() {
-//		XmlConfigReaderUtil xmlUtil = new XmlConfigReaderUtil();
-//		xmlUtil.readConfigXMLAndstartListSpider(false);
-//		ArrayList<UrlAndCategory> ucs = xmlUtil.getUcs();
-//		ArrayList<String> categorys = new ArrayList<String>();
-//		for(UrlAndCategory uc : ucs) {
-//			Boolean isRepeat = false;
-//			String category = uc.getCategory();
-//			for(String str : categorys) {
-//				if(str.equals(category)) {
-//					isRepeat = true;
-//				}
-//			}
-//			if(!isRepeat) {
-//				categorys.add(category);
-//			}
-//		}
-//		for(String c : categorys) {
-//			SpringUtil.ctx.getBean(GenerateListFileUtil.class).generateList(c);
-//		}
-//	}
-//	
-//	public static void LoadAll() {
-//		ArticleListUtil articleListUtil = SpringUtil.ctx.getBean(ArticleListUtil.class);
-//		articleListUtil.startListSpider();
-//	}
-	
+
+	public void reLoadNetInfosN() {
+		List<NetInfo> netInfos = netInfoDao.getNetInfosN();
+		articleListUtilx.getNetInfos().clear();
+		articleListUtilx.setNetInfos(netInfos);
+		articleListUtilx.runContentSpider();
+		List<NetInfoPage> pages = netInfoPageDao.getNetInfoPagesN();
+		for(NetInfoPage ipage : pages) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			NetInfo ni = netInfoDao.getNetInfoEntity(ipage.getParentId());
+			String decode = "";
+			for(WebsiteConf w : KKConf.websiteConfs) {
+				if(w.getWebsiteName().equals(ni.getInfoWebsite())) {
+					decode = w.getDecode();
+				}
+			}
+			HttpDownloadUtilx httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtilx.class);
+			httpDownloadUtils.DownloadChildPageFromURL(ni, ipage, decode);
+		}
+	}
 
 }

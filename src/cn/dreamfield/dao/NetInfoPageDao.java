@@ -23,14 +23,35 @@ public class NetInfoPageDao {
 	public NetInfoPage getNetInfoPageEntity(String originUrl) {
 		Session session = sessionFactory.openSession();
 		Query query = session.createQuery("from NetInfoPage a where a.pageOriginUrl='" + originUrl +"'");
-		@SuppressWarnings("unchecked")
-		List<NetInfoPage> list = query.list();
+		NetInfoPage netInfoPage = (NetInfoPage) query.uniqueResult();
 		session.close();
-		if(list.isEmpty()) {
-			return null;
-		} else {
-			return list.get(0);
-		}
+		return netInfoPage;
+	}
+	
+	public NetInfoPage getNetInfoPageEntity(Long pageId) {
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery("from NetInfoPage a where a.infoPageId=" + pageId);
+		NetInfoPage netInfoPage = (NetInfoPage) query.uniqueResult();
+		session.close();
+		return netInfoPage;
+	}
+	
+	public List<NetInfoPage> getNetInfoPagesN() {
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery("from NetInfoPage a where a.pageStatus='N'");
+		@SuppressWarnings("unchecked")
+		List<NetInfoPage> netInfoPages = query.list();
+		session.close();
+		return netInfoPages;
+	}
+	
+	public List<NetInfoPage> getNetInfoPagesByParent(Long parentId) {
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery("from NetInfoPage a where a.parentId=" + parentId);
+		@SuppressWarnings("unchecked")
+		List<NetInfoPage> netInfoPages = query.list();
+		session.close();
+		return netInfoPages;
 	}
 	
 	public void saveNetInfoPage(NetInfoPage netInfoPage) {
@@ -45,6 +66,16 @@ public class NetInfoPageDao {
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
 		session.update(netInfoPage);
+		transaction.commit();
+		session.close();
+	}
+	
+	public void deleteNetInfoPages(List<NetInfoPage> pages) {
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+		for(NetInfoPage p : pages) {
+			session.delete(p);
+		}
 		transaction.commit();
 		session.close();
 	}
