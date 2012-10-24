@@ -27,7 +27,7 @@ import cn.dreamfield.utils.SpringUtil;
 @Component
 public class SystemIN {
 	
-	private String[] websiteNames = {"u148"};
+	private String[] websiteNames = {"youxia"};
 	
 	public static void main(String[] args) throws IOException {
 		SystemIN in = SpringUtil.ctx.getBean(SystemIN.class);
