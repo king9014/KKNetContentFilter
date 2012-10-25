@@ -4,7 +4,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.dreamfield.conf.KKConf;
+import cn.dreamfield.dao.NetInfoImgDao;
 import cn.dreamfield.model.NetInfo;
+import cn.dreamfield.model.NetInfoImg;
 import cn.dreamfield.utils.HttpDownloadUtilx;
 import cn.dreamfield.utils.SpringUtil;
 import cn.jinren.test.KK;
@@ -43,6 +45,10 @@ public class NetImageFilter implements StrFilter {
 				if(KKConf.CHANGE_IMAGE_URL.containsKey(netInfo.getInfoWebsite()) && KKConf.CHANGE_IMAGE_URL.get(netInfo.getInfoWebsite())) {
 					result = result.replaceAll(imageUrl, "../../image/" + relativePath);
 				}
+				NetInfoImg netInfoImg = new NetInfoImg();
+				netInfoImg.setImgInfoId(netInfo.getInfoId());
+				netInfoImg.setImgUrl(relativePath);
+				SpringUtil.ctx.getBean(NetInfoImgDao.class).saveNetInfoImg(netInfoImg);
 			}
 		}
 		return result;

@@ -15,5 +15,6 @@
  		
 		<mapping resource="cn/dreamfield/model/netInfo.hbm.xml"/>
 		<mapping resource="cn/dreamfield/model/netInfoPage.hbm.xml"/>
+		<mapping resource="cn/dreamfield/model/netInfoImg.hbm.xml"/>
 	</session-factory>
 </hibernate-configuration>

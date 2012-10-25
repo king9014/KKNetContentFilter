@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.dreamfield.dao.NetInfoImgDao;
 import cn.dreamfield.model.NetInfo;
+import cn.dreamfield.model.NetInfoImg;
 import cn.dreamfield.utils.HttpDownloadUtilx;
 import cn.dreamfield.utils.SpringUtil;
 import cn.jinren.filter.IntroFilter;
@@ -59,6 +61,11 @@ public class TempOptUtil {
 		HttpDownloadUtilx httpDownloadUtils = SpringUtil.ctx.getBean(HttpDownloadUtilx.class);
 		String relativePath = httpDownloadUtils.DownloadImageFromURL(netInfo.getInfoImgUrl());
 		netInfo.setInfoImgUrl("http://dreamfield.cn/lib/image/"+relativePath);
+		
+		NetInfoImg netInfoImg = new NetInfoImg();
+		netInfoImg.setImgInfoId(0L);
+		netInfoImg.setImgUrl(relativePath);
+		SpringUtil.ctx.getBean(NetInfoImgDao.class).saveNetInfoImg(netInfoImg);
 	}
 	
 	private static StrFilter u148TempFilter() {

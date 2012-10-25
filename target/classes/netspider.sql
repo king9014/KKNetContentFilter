@@ -78,6 +78,29 @@ LOCK TABLES `net_info_page` WRITE;
 /*!40000 ALTER TABLE `net_info_page` DISABLE KEYS */;
 /*!40000 ALTER TABLE `net_info_page` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `net_info_img`
+--
+
+DROP TABLE IF EXISTS `net_info_img`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `net_info_img` (
+  `IMG_ID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `IMG_INFO_ID` bigint(20) NOT NULL,
+  `IMG_URL` varchar(105) NOT NULL,
+  PRIMARY KEY (`IMG_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `net_info_img`
+--
+LOCK TABLES `net_info_img` WRITE;
+/*!40000 ALTER TABLE `net_info_img` DISABLE KEYS */;
+/*!40000 ALTER TABLE `net_info_img` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

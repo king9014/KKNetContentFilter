@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="cn.dreamfield.model.NetInfoImg" table="net_info_img">
+		<id name="imgId" column="IMG_ID">
+			<generator class="native"/>
+		</id>
+		<property name="imgInfoId" column="IMG_INFO_ID"/>
+		<property name="imgUrl" column="IMG_URL"/>
+		
+	</class>
+</hibernate-mapping>
