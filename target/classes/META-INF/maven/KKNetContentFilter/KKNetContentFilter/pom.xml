@@ -30,6 +30,16 @@
 		<artifactId>log4j</artifactId>
 		<version>1.2.16</version>
 	</dependency>
+	<dependency>
+		<groupId>net.java.dev.rome</groupId>
+		<artifactId>rome</artifactId>
+		<version>1.0.0</version>
+	</dependency>
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpclient</artifactId>
+		<version>4.2.1</version>
+	</dependency>
   </dependencies>
   
   <build>

@@ -38,10 +38,10 @@ public class SystemIN {
 	public static void main(String[] args) throws IOException {
 		SystemIN in = SpringUtil.ctx.getBean(SystemIN.class);
 		
-//		in.generateWebsiteList();
+		in.generateWebsiteList();
 //		in.reLoadNetInfosN();
 //		in.generateFirstICO("youxia");
-		in.uploadNetInfosToday("u148");
+//		in.uploadNetInfosToday("u148");
 	}
 	
 	@Autowired
@@ -53,7 +53,6 @@ public class SystemIN {
 	@Autowired
 	private NetInfoImgDao netInfoImgDao;
 	
-	@SuppressWarnings("unused")
 	private void generateWebsiteList() {
 		for(String wn : websiteNames) {
 			generateWebsiteListByName(wn);
